@@ -4,25 +4,29 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav> -->
-    <router-view class="component_wrap"></router-view>
+    <!-- <router-view class="component_wrap"></router-view> -->
+    <router-view></router-view>
+    <footer-component class="footer_mg"></footer-component>
 </template>
 
 <script>
 import HeaderComponent from '@/components/HeaderComponent.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 export default {
-    name: 'HeaderPage',
+    // name: 'HeaderPage',
     components: {
-        HeaderComponent
+        HeaderComponent,
+        FooterComponent
     }
 }
 </script>
 
 <style>
-.component_wrap {
+/* .component_wrap {
     width: 1920px;
     margin: 140px auto;
-}
+} */
 /* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -37,10 +41,11 @@ export default {
 
 nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: #;
 }
 
 nav a.router-link-exact-active {
   color: #42b983;
 } */
+
 </style>

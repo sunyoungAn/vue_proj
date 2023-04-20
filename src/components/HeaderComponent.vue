@@ -1,14 +1,14 @@
 <template>
-    <div id="header_wrap" >
+    <div id="header_wrap" class="container">
         <div id="header_logo">
             <img alt="site logo" src="../assets/logo_temp.png">
         </div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
+            <div class="container">
                 <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-                <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-                </button> -->
+                </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -63,11 +63,16 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 #header_wrap {
-    width: 1280px;
-    margin: 0px auto;
+    /* width: 1280px;
+    height: 160px;
+    margin: 0px auto; */
+    background-color: white;
+    padding: 0px;
 }
+
+
 
 #header_logo {
     width: 200px;

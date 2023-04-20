@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MainView from '../views/MainView.vue'
+import AdminProductListView from '../views/AdminProductListView.vue'
+import AdminMemberListView from '../views/AdminMemberListView.vue'
+import AdminProductRegisterView from '../views/AdminProductRegisterView.vue'
 
 const routes = [
   {
@@ -20,6 +23,21 @@ const routes = [
     path: '/main',
     name: 'main',
     component: MainView
+  },
+  {
+    path: '/admin/prdouct/list',
+    name: 'adminprdouctlist',
+    component: AdminProductListView
+  },
+  {
+    path: '/admin/member/list',
+    name: 'adminmemberlist',
+    component: AdminMemberListView
+  },
+  {
+    path: '/admin/prdouct/register',
+    name: 'adminprdouctregister',
+    component: AdminProductRegisterView
   }
 ]
 

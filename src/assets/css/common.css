@@ -1,0 +1,24 @@
+/* 공통 margin-top => 헤더와 겹치기 때문에 설정
+*/
+.common_mt160 {
+    margin-top: 160px;
+}
+
+/* 관리자 페이지 전체 영역 설정 */
+.admin_wrap {
+    width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    /* padding: 0px 20px; */
+    /* overflow: hidden; */
+}
+
+/* 관리자 페이지 컨텐츠 영역 설정 */
+.admin_content {
+    width: 1080px;
+    float: left;
+}
+
+
+
+ 
