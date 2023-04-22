@@ -1,6 +1,6 @@
 <template>
     <div class="admin_submenu">
-        <div class="mb-">
+        <div class>
             <h2>관리자메뉴</h2>
         </div>
         <nav>
@@ -17,6 +17,7 @@
                 <li class="mb-3">보관상품관리</li>
                 <li class="mb-3">정산관리</li>
                 <li class="mb-3">공지관리</li>
+                <li class="mb-3">리뷰관리</li>
             </ul>
         </nav>
     </div>

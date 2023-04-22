@@ -5,28 +5,29 @@
             <h1 class="mb-4">| 상품관리</h1>
             
             <!-- 검색 영역 -->
-            <div class="mb-4">
+            <div class="mb-5">
                 <h2 class="mb-4">상품 검색</h2>
                 <div class="search-condition px-5">
                     <div class="row mb-3">
-                        <div class="col">
-                            번호
+                        <div class="col-2 py-2">
+                            상품번호
+                            <!-- <p class="text-center">번호</p> -->
                         </div>
-                        <div class="col">
+                        <div class="col-4">
                             <input type="text" class="form-control" placeholder="번호">
                         </div>
-                        <div class="col">
+                        <div class="col-2 py-2">
                             상품명
                         </div>
-                        <div class="col">
+                        <div class="col-4">
                             <input type="text" class="form-control" placeholder="상품명">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col">
+                        <div class="col-2 py-2">
                             브랜드
                         </div>
-                        <div class="col">
+                        <div class="col-4">
                             <select class="form-select brand_select" id="inputGroupSelect01">
                                 <option selected>Choose...</option>
                                 <option value="1">Reproduction of Found</option>
@@ -34,10 +35,10 @@
                                 <option value="3">Three</option>
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-2 py-2">
                             카테고리
                         </div>
-                        <div class="col">
+                        <div class="col-4">
                             <select class="form-select" id="inputGroupSelect02">
                                 <option selected>Choose...</option>
                                 <option value="1">One</option>
@@ -48,7 +49,9 @@
                     </div>
                     
                 </div>
-                <button class="btn btn-success btn-lg search_button">검색</button>
+                <div class="d-flex justify-content-center mt-4">
+                    <button class="btn btn-success btn-lg">검색</button>
+                </div>
             </div>
             
             <!-- 검색 결과-->
@@ -143,7 +146,7 @@
             </div>
             
             <!-- 페이지 네이션-->
-            <nav aria-label="Page navigation example">
+            <nav class="d-flex justify-content-center mt-4">
                 <ul class="pagination">
                     <li class="page-item">
                     <a class="page-link" href="#" aria-label="Previous">
@@ -161,10 +164,10 @@
                 </ul>
             </nav>
 
-
-            <button class="btn btn-success btn-lg search_button me-2" @click="moveProductRegister()">상품등록</button>
-            <button class="btn btn-success btn-lg search_button">상품삭제</button>
-        
+            <div class="d-flex justify-content-center mt-3">
+                <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="moveProductRegister()">상품등록</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">상품삭제</button>
+            </div>  
         </div>
     </div>
     
@@ -206,10 +209,10 @@ export default {
     margin-right: auto;
 }
 
-.search_button {
+/* .search_button {
     margin-left: auto;
     margin-right: auto;
-}
+} */
 
 
 </style>

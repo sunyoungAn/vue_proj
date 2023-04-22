@@ -4,6 +4,7 @@ import MainView from '../views/MainView.vue'
 import AdminProductListView from '../views/AdminProductListView.vue'
 import AdminMemberListView from '../views/AdminMemberListView.vue'
 import AdminProductRegisterView from '../views/AdminProductRegisterView.vue'
+import AdminMemberEditView from '../views/AdminMemberEditView.vue'
 
 const routes = [
   {
@@ -38,12 +39,22 @@ const routes = [
     path: '/admin/prdouct/register',
     name: 'adminprdouctregister',
     component: AdminProductRegisterView
+  },
+  {
+    path: '/admin/member/edit',
+    name: 'adminmemberedit',
+    component: AdminMemberEditView
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior () { // TODO 페이지 이동시 바로 위에 와있게끔 할 것
+    return { 
+      top:0
+     }
+  }
 })
 
 export default router
