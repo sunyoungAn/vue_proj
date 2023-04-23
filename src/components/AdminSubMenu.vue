@@ -5,7 +5,9 @@
         </div>
         <nav>
             <ul class="list-unstyled">
-                <li class="mb-3">문의관리</li>
+                <li class="mb-3">
+                    <router-link to="/admin/inquiry/list">문의관리</router-link>
+                </li>
                 <li class="mb-3">
                     <router-link to="/admin/member/list">회원관리</router-link>
                 </li>

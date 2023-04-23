@@ -5,6 +5,7 @@ import AdminProductListView from '../views/AdminProductListView.vue'
 import AdminMemberListView from '../views/AdminMemberListView.vue'
 import AdminProductRegisterView from '../views/AdminProductRegisterView.vue'
 import AdminMemberEditView from '../views/AdminMemberEditView.vue'
+import AdminInquiryListView from '../views/AdminInquiryListView.vue'
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
     path: '/admin/member/edit',
     name: 'adminmemberedit',
     component: AdminMemberEditView
+  },
+  {
+    path: '/admin/inquiry/list',
+    name: 'admininquirylist',
+    component: AdminInquiryListView
   }
 ]
 

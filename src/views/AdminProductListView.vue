@@ -7,14 +7,14 @@
             <!-- 검색 영역 -->
             <div class="mb-5">
                 <h2 class="mb-4">상품 검색</h2>
-                <div class="search-condition px-5">
+                <div class="px-5">
                     <div class="row mb-3">
                         <div class="col-2 py-2">
                             상품번호
                             <!-- <p class="text-center">번호</p> -->
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="번호">
+                            <input type="text" class="form-control" placeholder="상품번호">
                         </div>
                         <div class="col-2 py-2">
                             상품명

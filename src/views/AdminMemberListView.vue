@@ -14,7 +14,7 @@
                             <!-- <p class="text-center">번호</p> -->
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="번호">
+                            <input type="text" class="form-control" placeholder="회원번호">
                         </div>
                         <div class="col-2 py-2">
                             회원이름
