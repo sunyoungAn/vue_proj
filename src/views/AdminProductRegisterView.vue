@@ -174,11 +174,11 @@ export default {
 <style lang="css" scoped>
 @import "../assets/css/common.css";
 
-.admin_input_wrap {
+/* .admin_input_wrap {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-}
+} */
 
 
 

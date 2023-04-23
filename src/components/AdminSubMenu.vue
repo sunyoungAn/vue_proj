@@ -15,7 +15,6 @@
                 <li class="mb-3">판매관리</li>
                 <li class="mb-3">구매관리</li>
                 <li class="mb-3">보관상품관리</li>
-                <li class="mb-3">정산관리</li>
                 <li class="mb-3">공지관리</li>
                 <li class="mb-3">리뷰관리</li>
             </ul>
