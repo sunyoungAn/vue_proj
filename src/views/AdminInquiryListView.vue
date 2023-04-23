@@ -57,7 +57,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col"><input class="form-check-input" type="checkbox" value=""></th>
+                            <th scope="col"></th>
                             <th scope="col">문의번호</th>
                             <th scope="col">문의유형</th>
                             <th scope="col">문의제목</th>

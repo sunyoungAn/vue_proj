@@ -166,7 +166,7 @@
             <!-- 버튼 영역 -->
             <div class="d-flex justify-content-center mt-3">
                 <button class="btn btn-success btn-lg d-flex justify-content-end me-2">수정하기</button>
-                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="moveMeberList()">목록으로</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="moveMemberList()">목록으로</button>
             </div>
 
         </div>
@@ -187,18 +187,19 @@ export default {
         // 페이지 이동 라우트
         const router = useRouter();
         
-        const moveMeberList = () =>{
+        const moveMemberList = () =>{
             router.push({path:'/admin/member/list'});
             //query:{no : code}
         }
 
         return {
-            moveMeberList
+            moveMemberList
         }
     }
 }
 </script>
 
 <style lang="css" scoped>
+@import "../assets/css/common.css";
 
 </style>

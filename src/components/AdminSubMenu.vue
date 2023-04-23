@@ -6,17 +6,18 @@
         <nav>
             <ul class="list-unstyled">
                 <li class="mb-3">
-                    <router-link to="/admin/inquiry/list">문의관리</router-link>
-                </li>
-                <li class="mb-3">
                     <router-link to="/admin/member/list">회원관리</router-link>
                 </li>
                 <li class="mb-3">
                     <router-link to="/admin/prdouct/list">상품관리</router-link>
                 </li>
+                <li class="mb-3">보관상품관리</li>
                 <li class="mb-3">판매관리</li>
                 <li class="mb-3">구매관리</li>
-                <li class="mb-3">보관상품관리</li>
+                <li class="mb-3">거래관리</li>
+                <li class="mb-3">
+                    <router-link to="/admin/inquiry/list">문의관리</router-link>
+                </li>
                 <li class="mb-3">공지관리</li>
                 <li class="mb-3">리뷰관리</li>
             </ul>
