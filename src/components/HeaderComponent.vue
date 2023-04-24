@@ -1,5 +1,5 @@
 <template>
-    <div id="header_wrap" class="container">
+    <div id="header_wrap" class="container-fluid">
         <div id="header_logo">
             <img alt="site logo" src="../assets/logo_temp.png">
         </div>
