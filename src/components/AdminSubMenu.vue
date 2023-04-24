@@ -18,7 +18,9 @@
                 <li class="mb-3">
                     <router-link to="/admin/inquiry/list">문의관리</router-link>
                 </li>
-                <li class="mb-3">공지관리</li>
+                <li class="mb-3">
+                    <router-link to="/admin/notice/list">공지관리</router-link>
+                </li>
                 <li class="mb-3">리뷰관리</li>
             </ul>
         </nav>
