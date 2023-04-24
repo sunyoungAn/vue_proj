@@ -8,6 +8,7 @@ import AdminMemberEditView from '../views/AdminMemberEditView.vue'
 import AdminInquiryListView from '../views/AdminInquiryListView.vue'
 import AdminInquiryReplyView from '../views/AdminInquiryReplyView.vue'
 import AdminNoticeListView from '../views/AdminNoticeListView.vue'
+import AdminReviewListView from '../views/AdminReviewListView.vue'
 
 const routes = [
   {
@@ -62,6 +63,11 @@ const routes = [
     path: '/admin/notice/list',
     name: 'adminnoticelist',
     component: AdminNoticeListView
+  },
+  {
+    path: '/admin/review/list',
+    name: 'adminReviewlist',
+    component: AdminReviewListView
   }
 ]
 
