@@ -12,7 +12,9 @@
                     <router-link to="/admin/prdouct/list">상품관리</router-link>
                 </li>
                 <li class="mb-3">보관상품관리</li>
-                <li class="mb-3">판매관리</li>
+                <li class="mb-3">
+                    <router-link to="/admin/selling/list">판매관리</router-link>
+                </li>
                 <li class="mb-3">구매관리</li>
                 <li class="mb-3">거래관리</li>
                 <li class="mb-3">
