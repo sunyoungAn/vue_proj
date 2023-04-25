@@ -43,7 +43,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-2 py-2">
-                            마감기한
+                            만료일
                         </div>
                         <div class="col-4">
                             <input type="date" class="form-control">
@@ -74,7 +74,7 @@
                             <th scope="col">가격</th>
                             <th scope="col">판매자번호</th>
                             <th scope="col">상태</th>
-                            <th scope="col">마감기한</th>
+                            <th scope="col">만료일</th>
                         </tr>
                     </thead>
                     <tbody>
