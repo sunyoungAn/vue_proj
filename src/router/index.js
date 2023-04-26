@@ -12,6 +12,7 @@ import AdminReviewListView from '../views/AdminReviewListView.vue'
 import AdminSellingListView from '../views/AdminSellingListView.vue'
 import AdminBuyingListView from '../views/AdminBuyingListView.vue'
 import AdminInventoryListView from '../views/AdminInventoryListView.vue'
+import AdminContractListView from '../views/AdminContractListView.vue'
 
 const routes = [
   {
@@ -86,6 +87,11 @@ const routes = [
     path: '/admin/inventory/list',
     name: 'admininventorylist',
     component: AdminInventoryListView
+  },
+  {
+    path: '/admin/contract/list',
+    name: 'admincontractlist',
+    component: AdminContractListView
   }
 ]
 
