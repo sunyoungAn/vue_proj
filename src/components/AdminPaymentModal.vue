@@ -1,6 +1,6 @@
 <template>
     <div class="admin_blackBg"> <!--v-if="openmodal"-->
-        <div class="admin_whiteBg">
+        <div class="admin_whiteBg_payment">
             <div class="modal-header">
                 <h3 class="modal-title">결제상세정보</h3>
                 <button type="button" class="btn-close" aria-label="Close"></button>

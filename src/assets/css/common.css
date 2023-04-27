@@ -38,7 +38,7 @@
 }
 
 
-.admin_whiteBg {
+.admin_whiteBg_payment {
     width: 400px;
     background: white;
     border-radius: 10px; /* 테두리 둥글게*/
@@ -48,8 +48,15 @@
     margin-right: auto;
 }
 
-.admin_modal_header {
-    border-bottom: 1px;
+.admin_whiteBg_payment_delivery {
+    width: 800px;
+    background: white;
+    border-radius: 10px; /* 테두리 둥글게*/
+    padding: 20px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
+
 
  
