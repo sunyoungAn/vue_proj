@@ -110,6 +110,8 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  // linkActiveClass: 'active-link',
+  // linkExactActiveClass: 'exact-active-link',
   scrollBehavior () { // TODO 페이지 이동시 바로 위에 와있게끔 할 것
     return { 
       top:0

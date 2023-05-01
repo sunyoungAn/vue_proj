@@ -12,62 +12,53 @@
                         <div class="col-2 py-2">
                         </div>
                         <div class="col-2">
-                            <select class="form-select brand_select" id="inputGroupSelect01">
-                                <option selected value="1">제목</option>
-                                <option value="2">내용</option>
-                                <option value="3">제목+내용</option>
+                            <select class="form-select brand_select" v-model="state.select">
+                                <option :value=1>제목</option>
+                                <option :value=2>내용</option>
+                                <option :value=3>제목+내용</option>
                             </select>
                         </div>
                         <div class="col-7">
-                            <input type="text" class="form-control" placeholder="검색내용">
+                            <input type="text" class="form-control" v-model="state.form.searchCondition" placeholder="검색내용">
                         </div>
                     </div>
                     
                 </div>
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-success btn-lg">검색</button>
+                    <button class="btn btn-success btn-lg" @click="serach()">검색</button>
                 </div>
             </div>
 
             <!-- 검색 결과-->
-            <!-- <el-table :data="state.rows" style="cursor: pointer;" @row-click="handleContent1"> 
-                <el-table-column prop="_id" label="물품번호" width="100px" />
-                <el-table-column prop="name" label="물품명" />
-                <el-table-column prop="content" label="물품내용" />
-                <el-table-column prop="price" label="물품가격"  />
-
-            </el-table> -->
-
-            <!-- bootstrap-->
             <div>
-                <table class="table">
+                <table class="table align-middle" >
                     <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">공지번호</th>
+                        <tr class="text-center">
+                            <th scope="col" width="50px"></th>
+                            <th scope="col" width="150px">공지번호</th>
                             <th scope="col">제목</th>
-                            <th scope="col">등록일</th>
+                            <th scope="col" width="200px">등록일</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="data of state.rows" :key="data">  
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>{{ data.id }}</td>
+                            <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.check"></td>
+                            <td class="text-center">{{ data.id }}</td>
                             <td @click="moveNoticeEdit(data.id)" style="cursor: pointer;">{{ data.title }}</td>
-                            <td>{{ changeDateFormat(data.registDate) }}</td>
+                            <td class="text-center">{{ changeDateFormat(data.registDate) }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
-            <!-- 페이지 네이션-->
+            <!-- 페이지네이션-->
             <nav class="d-flex justify-content-center my-4">
-                <el-pagination background layout="prev, pager, next" :total="state.total" />
+                <el-pagination background layout="prev, pager, next" @current-change="changePage" :total="state.total" />
             </nav>
 
             <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="moveNoticeRegister()">공지등록</button>
-                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">공지삭제</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="deleteNotice()">공지삭제</button>
             </div>  
         </div>
 
@@ -92,12 +83,32 @@ export default {
 
         const state = reactive({
             rows : [],
-            total : 0
+            total : 0,
+            page: 0,
+            select : 1,
+            form : {
+                selectNumber : 1,
+                searchCondition: ''
+            },
+            check:[]
         })
         
         // 공지사항 전체 가져오기
         const loadData = () => {
-            axios.get("/api/admin/notice/getall").then((res)=>{
+            axios.get(`/api/admin/notice/getall?page=${state.page}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.content
+                state.total = res.data.totalElements
+            }).catch(()=>{
+            })
+        }
+
+        // 검색하기
+        const serach = () => {
+
+            state.form.selectNumber = state.select;
+
+            axios.post(`/api/admin/notice/search?page=${state.page}`, state.form).then((res)=>{
                 console.log(res.data);
                 state.rows = res.data.content
                 state.total = res.data.totalElements
@@ -107,7 +118,7 @@ export default {
 
         // 날짜형식변환 yyyy/mm/dd
         const changeDateFormat = (data) => {
-            var date = new Date(data);
+            let date = new Date(data);
             let year = date.getFullYear();
             let month = ("0" + (1 + date.getMonth())).slice(-2);
             let day = ("0" + date.getDate()).slice(-2);
@@ -115,14 +126,46 @@ export default {
             return year + "/" + month + "/" + day;
         }
 
+        // 페이징기능
+        const changePage = (page) => {
+            console.log(page);
+            state.page = page - 1; // 상태변수값 변경
+            loadData(); // 게시물 읽기
+        }
+
         // 공지수정페이지로 이동
         const moveNoticeEdit = (no) =>{
-            router.push({path:'/admin/notice/edit', query:{no : no}});
+            router.push({path:'/admin/notice/edit', query:{no : no} ,});
         }
 
         // 공지등록페이지로 이동
         const moveNoticeRegister = () =>{
             router.push({path:'/admin/notice/register'});
+        }
+
+        // 공지삭제
+        const deleteNotice = () => {
+            
+            if(state.check.length === 0) {
+                window.alert("삭제할 대상을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 공지사항을 삭제하시겠습니까?")) {
+                axios.delete(`/api/admin/notice/delete/${state.check}`).then((res)=>{
+                    console.log(res.data);
+                    window.alert("공지사항이 정상적으로 삭제되었습니다.");
+                    loadData();
+                    // 내용 초기화
+                    state.check = [];
+                    state.select = 1;
+                    state.form.searchCondition = '';
+                }).catch(()=>{
+                    window.alert("공지사항 삭제중 오류가 발생하였습니다.");
+                })
+            }
+            
+
         }
 
         // 페이지로드
@@ -133,9 +176,12 @@ export default {
         // 리턴값
         return {
             state,
+            serach,
             changeDateFormat,
             moveNoticeEdit,
-            moveNoticeRegister
+            moveNoticeRegister,
+            changePage,
+            deleteNotice
         }
     }
 }

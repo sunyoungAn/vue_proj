@@ -28,6 +28,7 @@
                 </li>
                 <li class="mb-3">
                     <router-link to="/admin/notice/list">공지관리</router-link>
+                    <!-- <router-link active-class="active-link" exact-active-class="exact-active-link" to="/admin/notice">공지관리</router-link> -->
                 </li>
                 <li class="mb-3">
                     <router-link to="/admin/review/list">리뷰관리</router-link>
@@ -72,4 +73,15 @@ nav {
 nav a.router-link-exact-active {
   color: #42b983;
 } 
+
+
+/* .active-link {
+    color: #42b983;
+}
+
+.exact-active-link {
+    color: #42b983;
+    /* font-weight: bold; */
+/* } */ 
+
 </style>
