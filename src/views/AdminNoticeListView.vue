@@ -30,6 +30,15 @@
             </div>
 
             <!-- 검색 결과-->
+            <!-- <el-table :data="state.rows" style="cursor: pointer;" @row-click="handleContent1"> 
+                <el-table-column prop="_id" label="물품번호" width="100px" />
+                <el-table-column prop="name" label="물품명" />
+                <el-table-column prop="content" label="물품내용" />
+                <el-table-column prop="price" label="물품가격"  />
+
+            </el-table> -->
+
+            <!-- bootstrap-->
             <div>
                 <table class="table">
                     <thead>
@@ -41,60 +50,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr v-for="data of state.rows" :key="data">  
                             <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>시스템보수작업에 대하여 알립니다</td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>시스템보수작업에 대하여 알립니다</td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>시스템보수작업에 대하여 알립니다</td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>시스템보수작업에 대하여 알립니다</td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>시스템보수작업에 대하여 알립니다</td>
-                            <td>2023/04/07</td>
+                            <td>{{ data.id }}</td>
+                            <td @click="moveNoticeEdit(data.id)" style="cursor: pointer;">{{ data.title }}</td>
+                            <td>{{ changeDateFormat(data.registDate) }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
             <!-- 페이지 네이션-->
-            <nav class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                    </li>
-                </ul>
+            <nav class="d-flex justify-content-center my-4">
+                <el-pagination background layout="prev, pager, next" :total="state.total" />
             </nav>
 
-            <div class="d-flex justify-content-center mt-3">
+            <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="moveNoticeRegister()">공지등록</button>
                 <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">공지삭제</button>
             </div>  
@@ -105,7 +76,9 @@
 
 <script>
 import AdminSubMenu from '@/components/AdminSubMenu.vue'
+import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     name: 'SubMenu',
@@ -116,17 +89,54 @@ export default {
        
         // 페이지 이동 라우트
         const router = useRouter();
+
+        const state = reactive({
+            rows : [],
+            total : 0
+        })
         
+        // 공지사항 전체 가져오기
+        const loadData = () => {
+            axios.get("/api/admin/notice/getall").then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.content
+                state.total = res.data.totalElements
+            }).catch(()=>{
+            })
+        }
+
+        // 날짜형식변환 yyyy/mm/dd
+        const changeDateFormat = (data) => {
+            var date = new Date(data);
+            let year = date.getFullYear();
+            let month = ("0" + (1 + date.getMonth())).slice(-2);
+            let day = ("0" + date.getDate()).slice(-2);
+
+            return year + "/" + month + "/" + day;
+        }
+
+        // 공지수정페이지로 이동
+        const moveNoticeEdit = (no) =>{
+            router.push({path:'/admin/notice/edit', query:{no : no}});
+        }
+
+        // 공지등록페이지로 이동
         const moveNoticeRegister = () =>{
             router.push({path:'/admin/notice/register'});
-            //query:{no : code}
         }
 
+        // 페이지로드
+        onMounted(() => {
+            loadData();
+        })
+
+        // 리턴값
         return {
+            state,
+            changeDateFormat,
+            moveNoticeEdit,
             moveNoticeRegister
         }
-
-       
     }
 }
 </script>
