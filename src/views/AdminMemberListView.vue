@@ -20,7 +20,7 @@
                             회원이름
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="상품명">
+                            <input type="text" class="form-control" placeholder="회원이름">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -46,10 +46,10 @@
             
             <!-- 검색 결과-->
             <div>
-                <table class="table">
+                <table class="table align-middle">
                     <thead>
-                        <tr>
-                            <th scope="col"><input class="form-check-input" type="checkbox" value=""></th>
+                        <tr class="text-center">
+                            <th scope="col" width="50px"><input class="form-check-input" type="checkbox" value=""></th>
                             <th scope="col">회원번호</th>
                             <th scope="col">회원이름</th>
                             <th scope="col">이메일</th>
@@ -59,50 +59,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>한여름</td>
-                            <td>hotsummer@naver.com</td>
-                            <td>010-5555-4444</td>
-                            <td>2023/04/22</td>
-                            <td>일반회원</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>한여름</td>
-                            <td>hotsummer@naver.com</td>
-                            <td>010-5555-4444</td>
-                            <td>2023/04/22</td>
-                            <td>일반회원</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>한여름</td>
-                            <td>hotsummer@naver.com</td>
-                            <td>010-5555-4444</td>
-                            <td>2023/04/22</td>
-                            <td>일반회원</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>한여름</td>
-                            <td>hotsummer@naver.com</td>
-                            <td>010-5555-4444</td>
-                            <td>2023/04/22</td>
-                            <td>일반회원</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>한여름</td>
-                            <td>hotsummer@naver.com</td>
-                            <td>010-5555-4444</td>
-                            <td>2023/04/22</td>
-                            <td>일반회원</td>
+                        <tr v-for="data of state.rows" :key="data">
+                            <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.check"></td>
+                            <td class="text-center">{{ data.memberNumber }}</td>
+                            <td class="text-center" @click="moveMemberEdit(data.memberNumber)" style="cursor: pointer;">{{ data.name}}</td>
+                            <td>{{ data.email }}</td>
+                            <td class="text-center">{{ data.phoneNumber }}</td>
+                            <td class="text-center">{{ changeDateFormat(data.registDate) }}</td>
+                            <td class="text-center">{{ data.memberStatus }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -110,21 +74,7 @@
             
             <!-- 페이지 네이션-->
             <nav class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                    </li>
-                </ul>
+                <el-pagination background layout="prev, pager, next" @current-change="changePage" :total="state.total" />
             </nav>
 
             <div class="d-flex justify-content-center mt-3">
@@ -137,6 +87,9 @@
 
 <script>
 import AdminSubMenu from '@/components/AdminSubMenu.vue'
+import { onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     name: 'SubMenu',
@@ -145,8 +98,59 @@ export default {
     },
     setup () {
         
+        // 페이지 이동 라우트
+        const router = useRouter();
 
-        return {}
+        const state = reactive({
+            rows : [],
+            total : 0,
+            page: 0,
+            check:[]
+        })
+
+        // 멤버 전체 가져오기
+        const loadData = () => {
+            axios.get(`/api/admin/member/getall?page=${state.page}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.content
+                state.total = res.data.totalElements
+            }).catch(()=>{
+            })
+        }
+
+        // 날짜형식변환 yyyy/mm/dd
+        const changeDateFormat = (data) => {
+            let date = new Date(data);
+            let year = date.getFullYear();
+            let month = ("0" + (1 + date.getMonth())).slice(-2);
+            let day = ("0" + date.getDate()).slice(-2);
+
+            return year + "/" + month + "/" + day;
+        }
+
+        // 페이징기능
+        const changePage = (page) => {
+            console.log(page);
+            state.page = page - 1; // 상태변수값 변경
+            loadData(); // 게시물 읽기
+        }
+
+        // 멤버수정페이지로 이동
+        const moveMemberEdit = (no) => {
+            router.push({path:'/admin/member/edit', query:{no : no} ,});
+        }
+
+        onMounted(() => {
+            loadData();
+        })
+
+        // 리턴값
+        return {
+            state,
+            changePage,
+            moveMemberEdit,
+            changeDateFormat
+        }
     }
 }
 </script>
