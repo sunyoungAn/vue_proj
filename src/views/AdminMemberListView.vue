@@ -178,8 +178,8 @@ export default {
         }
 
         // 회원수정페이지로 이동
-        const moveMemberEdit = (no) => {
-            router.push({path:'/admin/member/edit', query:{no : no} ,});
+        const moveMemberEdit = (memberNumber) => {
+            router.push({path:'/admin/member/edit', query:{memberNumber : memberNumber} ,});
         }
 
         onMounted(() => {
@@ -195,7 +195,6 @@ export default {
             changeDateFormat,
             changePhoneNumberFormat,
             changeMemberStatusFormat
-            
         }
     }
 }
