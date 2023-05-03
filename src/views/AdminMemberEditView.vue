@@ -110,7 +110,7 @@
                             </div>
                             <div class="col-2 d-flex align-items-center justify-content-center">
                                 <div class="d-flex justify-content-center">
-                                    <button class="btn btn btn-outline-success d-flex justify-content-center">삭제</button>
+                                    <button class="btn btn btn-outline-success d-flex justify-content-center" @click="deleteAddress(address.id, address.defaultAddress)" >삭제</button>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="col-2 d-flex align-items-center justify-content-center">
                                     <div class="d-flex justify-content-center">
-                                        <button class="btn btn btn-outline-success d-flex justify-content-center">삭제</button>
+                                        <button class="btn btn btn-outline-success d-flex justify-content-center" @click="deleteCard(card.id)">삭제</button>
                                     </div>
                                 </div>
                             </div>
@@ -308,9 +308,39 @@ export default {
         }
 
         // 배송정보삭제
-        // 기본배송지인경우는 삭제 불가
+        const deleteAddress = (id, defaultAddress) => {
+
+            if(confirm("선택한 주소를 삭제하시겠습니까?")) {
+
+                // 기본배송지인경우는 삭제 불가
+                if(defaultAddress === 1) {
+                    window.alert("기본배송지로 설정된 주소는 삭제 할 수 없습니다.");
+                    return false;
+                }
+            
+                axios.delete(`/api/admin/member/delete/address/${id}`).then((res)=> {
+                    console.log(res.data);
+                    window.alert("주소정보가 정상적으로 삭제되었습니다.");
+                    window.location.reload(true)
+                }).catch(()=>{
+                    window.alert("주소정보 삭제 중 오류가 발생하였습니다.");
+                })
+            }
+        }
 
         // 카드정보삭제
+        const deleteCard = (id) => {
+            if(confirm("선택한 카드를 삭제하시겠습니까?")) {
+
+                axios.delete(`/api/admin/member/delete/card/${id}`).then((res)=> {
+                    console.log(res.data);
+                    window.alert("카드정보가 정상적으로 삭제되었습니다.");
+                    window.location.reload(true)
+                }).catch(()=>{
+                    window.alert("카드정보 삭제 중 오류가 발생하였습니다.");
+                })
+            }
+        }
 
         // 목록으로
         const moveMemberList = () => {
@@ -331,7 +361,9 @@ export default {
             edit,
             uname,
             uphone,
-            uaccount
+            uaccount,
+            deleteAddress,
+            deleteCard
         }
     }
 }
