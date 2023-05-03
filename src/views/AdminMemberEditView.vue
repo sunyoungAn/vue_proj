@@ -16,7 +16,7 @@
                 <div class="mb-4">
                     <label class="form-label fs-5">| 이름</label>
                     <div class="px-2 col-5">
-                        <input type="text" class="form-control" v-model="state.data.name">
+                        <input type="text" class="form-control" ref="uname" v-model="state.data.name"  maxlength="50">
                     </div>
                 </div>
                 <div class="mb-4">
@@ -28,13 +28,13 @@
                 <div class="mb-4">
                     <label class="form-label fs-5">| 비밀번호</label>
                     <div class="px-2 col-5">
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" placeholder="값을 입력한 경우에만 수정됩니다." v-model="state.password" maxlength="255">
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fs-5">| 휴대폰번호</label>
                     <div class="px-2 col-5">
-                        <input type="text" class="form-control" v-model="state.data.phoneNumber" maxlength="11" placeholder="-를 제외하고 입력해주세요">
+                        <input type="text" class="form-control" ref="uphone" v-model="state.data.phoneNumber" maxlength="11" placeholder="-를 제외하고 입력해주세요">
                     </div>
                 </div>
                 <div class="mb-4">
@@ -79,19 +79,19 @@
                 <div class="mb-4">
                     <label class="form-label fs-5">| 은행명</label>
                     <div class="px-2 col-4">
-                        <input type="text" class="form-control" v-model="state.data.bankName">
+                        <input type="text" class="form-control" v-model="state.data.bankName" maxlength="20">
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fs-5">| 계좌번호</label>
                     <div class="px-2 col-5">
-                        <input type="text" class="form-control" v-model="state.data.accountNumber" placeholder="-를 제외하고 입력해주세요">
+                        <input type="text" class="form-control" ref="uaccount" v-model="state.data.accountNumber" placeholder="-를 제외하고 입력해주세요" maxlength="20">
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fs-5">| 예금주</label>
                     <div class="px-2 col-4">
-                        <input type="text" class="form-control" v-model="state.data.depositor">
+                        <input type="text" class="form-control" v-model="state.data.depositor" maxlength="50">
                     </div>
                 </div>
                 
@@ -116,38 +116,7 @@
                         </div>
                     </li>
                 </ul>
-                    
-                <!-- <div class="mb-4">
-                    <label class="form-label fs-5">| 받는사람</label>
-                    <div class="px-2 col-5">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 기본주소</label>
-                    <div class="px-2">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 상세주소</label>
-                    <div class="px-2">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 우편번호</label>
-                    <div class="px-2 col-3">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 휴대폰번호</label>
-                    <div class="px-2 col-5">
-                        <input type="text" class="form-control">
-                    </div>
-                </div> -->
-
+                
                 <hr class="my-5">
 
                 <h3 class="mb-4">회원카드정보</h3>
@@ -166,48 +135,12 @@
                                 </div>
                             </div>
                         </li>
-                    </ul>
-
-
-
-
-
-
-
-
-                <!-- <div class="mb-4">
-                    <label class="form-label fs-5">| 카드명의자</label>
-                    <div class="px-2 col-5">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 카드번호</label>
-                    <div class="px-2 col-5">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 유효년도</label>
-                    <div class="px-2 col-2">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fs-5">| 유효월</label>
-                    <div class="px-2 col-2">
-                        <input type="text" class="form-control">
-                    </div>
-                </div> -->
-
-                
-
-
+                    </ul>              
             </div>
 
             <!-- 버튼 영역 -->
             <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-success btn-lg d-flex justify-content-end me-2">수정하기</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="edit()">수정하기</button>
                 <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="moveMemberList()">목록으로</button>
             </div>
 
@@ -219,7 +152,7 @@
 <script>
 import AdminSubMenu from '@/components/AdminSubMenu.vue'
 import { useRoute,useRouter } from 'vue-router';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import axios from "axios";
 import { onMounted } from '@vue/runtime-core';
 
@@ -235,8 +168,24 @@ export default {
 
         const state = reactive({
             memberNumber : Number(route.query.memberNumber),
-            data : ''
+            data : '',
+            password : '',
+            form : {
+                name : '',
+                password : '',
+                phoneNumber: '',
+                gender : null,
+                birthDate : '',
+                memberStatus : null,
+                bankName : '',
+                accountNumber : '',
+                depositor : ''
+            }
         })
+
+        const uname = ref();
+        const uphone = ref();
+        const uaccount = ref();
 
         // 회원상세내용
         const loadData = () => {
@@ -280,6 +229,89 @@ export default {
             return String(card1) + String(mask) + String(card2);
         }
 
+        // 회원정보수정
+        const edit = () => {
+
+            // 유효성체크처리
+            // 이름 필수입력체크
+            if(state.data.name === '') {
+                alert('이름을 입력해주세요.');
+                uname.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 휴대폰번호 필수입력체크
+            if(state.data.phoneNumber === '') {
+                alert('휴대폰번호를 입력해주세요.');
+                uphone.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 휴대폰번호 숫자체크
+            if(isNaN(state.data.phoneNumber)) {
+                alert('휴대폰번호는 숫자만 입력해주세요.');
+                uphone.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 휴대폰번호 자릿수체크
+            if(state.data.phoneNumber.length !== 11) {
+                alert('휴대폰번호를 11자리 숫자로 입력해주세요.');
+                uphone.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 계좌번호 숫자체크
+            if(isNaN(state.data.accountNumber)) {
+                alert('계좌번호는 숫자만 입력해주세요.');
+                uaccount.value.focus();
+                window.scrollTo({top:'1000', behavior:'smooth'});
+                return false;
+            }
+
+            // form에 값 설정
+            state.form.name = state.data.name;
+
+            if(state.password === '') {
+                state.form.password = null;
+            } else {
+                state.form.password = state.password;
+            }
+            state.form.phoneNumber = state.data.phoneNumber;
+            state.form.gender = state.data.gender;
+            state.form.birthDate = state.data.birthDate;
+            state.form.memberStatus = state.data.memberStatus;
+            state.form.bankName = state.data.bankName;
+            state.form.accountNumber = state.data.accountNumber;
+            state.form.depositor = state.data.depositor;
+
+            axios.put(`/api/admin/member/edit/${state.memberNumber}`, state.form).then((res)=>{
+                console.log(res);
+                window.alert("회원정보가 성공적으로 수정되었습니다.");
+                // 비밀번호값 초기화
+                state.form.password = null;
+                state.password = null;
+                window.scrollTo({top:'0', behavior:'smooth'});
+            }).catch(()=>{
+
+                // 비밀번호값 초기화
+                state.form.password = null;
+                state.password = null;
+
+                window.alert("회원정보수정 중 오류가 발생하였습니다. 다시 시도해주세요.");
+            })
+
+        }
+
+        // 배송정보삭제
+        // 기본배송지인경우는 삭제 불가
+
+        // 카드정보삭제
+
         // 목록으로
         const moveMemberList = () => {
             router.push({path:'/admin/member/list'});
@@ -295,8 +327,11 @@ export default {
             moveMemberList,
             changeDateFormat,
             changePhoneNumberFormat,
-            changeCardFormat
-
+            changeCardFormat,
+            edit,
+            uname,
+            uphone,
+            uaccount
         }
     }
 }
