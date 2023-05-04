@@ -7,11 +7,10 @@
             <!-- 검색 영역 -->
             <div class="mb-5">
                 <h2 class="mb-4">회원 검색</h2>
-                <div class="search-condition px-5">
+                <div class="px-5">
                     <div class="row mb-3">
                         <div class="col-2 py-2">
                             회원번호
-                            <!-- <p class="text-center">번호</p> -->
                         </div>
                         <div class="col-4">
                             <input type="text" class="form-control" v-model="state.memberNumber" placeholder="회원번호">
@@ -107,7 +106,6 @@ export default {
             rows : [],
             total : 0,
             page: 0,
-            check:[],
             memberNumber : '',
             name : '',
             email : '',
