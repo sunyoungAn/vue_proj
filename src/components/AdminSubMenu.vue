@@ -9,7 +9,7 @@
                     <router-link to="/admin/member/list">회원관리</router-link>
                 </li>
                 <li class="mb-3">
-                    <router-link to="/admin/prdouct/list">상품관리</router-link>
+                    <router-link to="/admin/product/list">상품관리</router-link>
                 </li>
                 <li class="mb-3">
                     <router-link to="/admin/inventory/list">보관상품관리</router-link>

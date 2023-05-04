@@ -36,8 +36,8 @@ const routes = [
     component: MainView
   },
   {
-    path: '/admin/prdouct/list',
-    name: 'adminprdouctlist',
+    path: '/admin/product/list',
+    name: 'adminproductlist',
     component: AdminProductListView
   },
   {
@@ -46,8 +46,8 @@ const routes = [
     component: AdminMemberListView
   },
   {
-    path: '/admin/prdouct/register',
-    name: 'adminprdouctregister',
+    path: '/admin/product/register',
+    name: 'adminproductregister',
     component: AdminProductRegisterView
   },
   {
