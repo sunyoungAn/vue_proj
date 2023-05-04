@@ -49,7 +49,9 @@
                 <table class="table align-middle">
                     <thead>
                         <tr class="text-center">
-                            <th scope="col" width="50px"><input class="form-check-input" type="checkbox" value=""></th>
+                            <th scope="col" width="50px">
+                                <input class="form-check-input" type="checkbox" :checked="state.checkAll" @change="checkAllEvnet()"> 
+                            </th>
                             <th scope="col">회원번호</th>
                             <th scope="col">회원이름</th>
                             <th scope="col">이메일</th>
@@ -60,7 +62,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="data of state.rows" :key="data">
-                            <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.check"></td>
+                            <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.memberNumber" v-model="state.checkList" :disabled="data.memberStatus === 3" @change="checkEvnet()"></td>
                             <td class="text-center">{{ data.memberNumber }}</td>
                             <td class="text-center" @click="moveMemberEdit(data.memberNumber)" style="cursor: pointer;">{{ data.name}}</td>
                             <td>{{ data.email }}</td>
@@ -78,7 +80,7 @@
             </nav>
 
             <div class="d-flex justify-content-center mt-5">
-                <button class="btn btn-success btn-lg d-flex justify-content-start">회원탈퇴</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start" @click="withdrawal()" >회원탈퇴</button>
             </div>  
         </div>
     </div>
@@ -109,7 +111,10 @@ export default {
             memberNumber : '',
             name : '',
             email : '',
-            phoneNumber : ''
+            phoneNumber : '',
+            checkList:[],
+            checkAll : false,
+            targetMemberList : 0
         })
 
         // 회원 전체 가져오기
@@ -118,6 +123,13 @@ export default {
                 console.log(res.data);
                 state.rows = res.data.content
                 state.total = res.data.totalElements
+
+                for(let idx in state.rows) {
+                    if(state.rows[idx].memberStatus !== 3) {
+                        state.targetMemberList = state.targetMemberList + 1;
+                    }
+                }
+
             }).catch(()=>{
             })
         }
@@ -126,6 +138,8 @@ export default {
         const changePage = (page) => {
             console.log(page);
             state.page = page - 1; // 상태변수값 변경
+            state.checkList = [];
+            state.checkAll = false;
             loadData(); // 게시물 읽기
         }
 
@@ -179,7 +193,60 @@ export default {
 
         // 회원수정페이지로 이동
         const moveMemberEdit = (memberNumber) => {
-            router.push({path:'/admin/member/edit', query:{memberNumber : memberNumber} ,});
+            router.push({path:'/admin/member/edit', query:{memberNumber : memberNumber}});
+        }
+
+        // 회원 탈퇴
+        const withdrawal = () => {
+            if(state.checkList.length === 0) {
+                window.alert("회원을 1명 이상 선택해주세요.");
+                return false;
+            }
+
+             if(confirm("선택한 회원을 탈퇴처리하겠습니까?")) {
+                axios.put(`/api/admin/member/withdrawal`, state.checkList).then((res)=>{
+                    console.log(res.data);
+                    window.alert("탈퇴처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                    // 내용 초기화
+                    state.checkList = [];
+                }).catch(()=>{
+                    window.alert("탈퇴처리 중 오류가 발생하였습니다.");
+                })
+             }
+        }
+
+        // 전체선택 처리
+        const checkAllEvnet = () => {
+            if(state.checkAll === false) {
+                for(let idx in state.rows) {
+                    // 이미 탈퇴한 회원은 선택 안되게 하기
+                    if(state.rows[idx].memberStatus === 3) {
+                        continue;
+                    }
+
+                    // 이미 선택되어 있는 회원인 경우에는 중복선택 제외하기
+                    if(state.checkList.includes(state.rows[idx].memberNumber)) {
+                        continue;
+                    }
+
+                    state.checkList.push(state.rows[idx].memberNumber);
+                }
+                state.checkAll = true;
+
+            } else {
+                state.checkList = [];
+                state.checkAll = false;
+            }
+        }
+
+        // 체크박스 개별 처리
+        const checkEvnet = () => {
+            if(state.checkList.length === state.targetMemberList) {
+                state.checkAll = true;
+            } else {
+                state.checkAll = false;
+            }
         }
 
         onMounted(() => {
@@ -194,8 +261,12 @@ export default {
             moveMemberEdit,
             changeDateFormat,
             changePhoneNumberFormat,
-            changeMemberStatusFormat
+            changeMemberStatusFormat,
+            withdrawal,
+            checkAllEvnet,
+            checkEvnet
         }
+
     }
 }
 </script>
@@ -203,15 +274,4 @@ export default {
 <style lang="css">
 @import "../assets/css/common.css";
 
-/* .admin_wrap {
-    width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0px 20px;
-    overflow: hidden;
-} */
-/* .admin_member_list {
-    width: 1000px;
-    float: left;
-} */
 </style>

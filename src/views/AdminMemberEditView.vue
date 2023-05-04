@@ -321,7 +321,8 @@ export default {
                 axios.delete(`/api/admin/member/delete/address/${id}`).then((res)=> {
                     console.log(res.data);
                     window.alert("주소정보가 정상적으로 삭제되었습니다.");
-                    window.location.reload(true)
+                    // window.location.reload(true)
+                    loadData();
                 }).catch(()=>{
                     window.alert("주소정보 삭제 중 오류가 발생하였습니다.");
                 })
@@ -335,7 +336,8 @@ export default {
                 axios.delete(`/api/admin/member/delete/card/${id}`).then((res)=> {
                     console.log(res.data);
                     window.alert("카드정보가 정상적으로 삭제되었습니다.");
-                    window.location.reload(true)
+                    // window.location.reload(true)
+                    loadData();
                 }).catch(()=>{
                     window.alert("카드정보 삭제 중 오류가 발생하였습니다.");
                 })
