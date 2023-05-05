@@ -112,7 +112,8 @@ export default {
             phoneNumber : '',
             checkList:[],
             checkAll : false,
-            targetMemberList : 0
+            targetMemberList : 0,
+            isSearch : false
         })
 
         // 회원 전체 가져오기
@@ -138,7 +139,11 @@ export default {
             state.page = page - 1; // 상태변수값 변경
             state.checkList = [];
             state.checkAll = false;
-            loadData(); // 게시물 읽기
+            if(state.isSearch === false) {
+                loadData(); // 게시물 읽기
+            } else {
+                search();
+            }
         }
 
         // 검색하기
@@ -151,8 +156,10 @@ export default {
                 return false;
             }
 
-            if(state.memberNumber === '') {
-                state.memberNumber === null
+            if(state.memberNumber === '' && state.name === '' && state.email === '' && state.phoneNumber === '') {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
             }
 
             axios.get(`/api/admin/member/search?page=${state.page}&memberNumber=${state.memberNumber}&name=${state.name}&email=${state.email}&phoneNumber=${state.phoneNumber}`).then((res)=>{
