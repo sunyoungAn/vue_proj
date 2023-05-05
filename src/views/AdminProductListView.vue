@@ -53,7 +53,9 @@
                 <table class="table align-middle">
                     <thead>
                         <tr class="text-center">
-                            <th scope="col" width="50px"><input class="form-check-input" type="checkbox"></th>
+                            <th scope="col" width="50px">
+                                <input class="form-check-input" type="checkbox" :checked="state.checkAll" @change="checkAllEvnet()">
+                            </th>
                             <th scope="col" width="100px">상품번호</th>
                             <th scope="col">상품명(영문)</th>
                             <th scope="col">상품명(한글)</th>
@@ -63,7 +65,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="data of state.rows" :key="data">
-                            <td class="text-center"><input class="form-check-input" type="checkbox"></td>
+                            <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.checkList" @change="checkEvnet()"></td>
                             <td class="text-center">{{ data.id }}</td>
                             <td>{{ data.productEngName }}</td>
                             <td>{{ data.productKorName }}</td>
@@ -82,7 +84,7 @@
 
             <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="moveProductRegister()">상품등록</button>
-                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">상품삭제</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="deleteProduct()">상품삭제</button>
             </div>  
         </div>
     </div>
@@ -125,8 +127,9 @@ export default {
             serachCategory : 0,
             searchId : '',
             searchName : '',
-            isSearch : false
-
+            isSearch : false,
+            checkAll : false,
+            checkList : []
         })
 
         // 상품관리리스트페이지에 띄울 정보 모두 가져오기
@@ -137,12 +140,8 @@ export default {
                 state.total = res.data.productList.totalElements;
                 state.brandList = res.data.brandList;
                 state.productBrand = res.data.productBrandMap;
-
-                // for(let idx in state.rows) {
-                //     if(state.rows[idx].memberStatus !== 3) {
-                //         state.targetMemberList = state.targetMemberList + 1;
-                //     }
-                // }
+                state.checkAll = false;
+                state.checkList = [];
             }).catch(()=>{
             })
         }
@@ -187,14 +186,60 @@ export default {
                 state.rows = res.data.productList.content;
                 state.total = res.data.productList.totalElements;
                 state.productBrand = res.data.productBrandMap;
+                state.checkAll = false;
+                state.checkList = [];
             }).catch(()=>{
             })
+        }
 
+        // 전체선택 처리
+        const checkAllEvnet = () => {
+            if(state.checkAll === false) {
+                for(let idx in state.rows) {
+
+                    // 이미 선택되어 있는 상품인 경우에는 중복선택 제외하기
+                    if(state.checkList.includes(state.rows[idx].id)) {
+                        continue;
+                    }
+                    state.checkList.push(state.rows[idx].id);
+                }
+                state.checkAll = true;
+            } else {
+                state.checkList = [];
+                state.checkAll = false;
+            }
+        }
+
+        // 체크박스 개별 처리
+        const checkEvnet = () => {
+            if(state.checkList.length === state.rows.length) {
+                state.checkAll = true;
+            } else {
+                state.checkAll = false;
+            }
         }
 
         // 상품등록페이지로 이동
         const moveProductRegister = () =>{
             router.push({path:'/admin/product/register'});
+        }
+
+        // 상품삭제
+        const deleteProduct = () => {
+            if(state.checkList.length === 0) {
+                window.alert("상품을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 상품을 삭제하겠습니까?")) {
+                axios.put(`/api/admin/product/delete`, state.checkList).then((res)=>{
+                    console.log(res.data);
+                    window.alert("삭제처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                }).catch(()=>{
+                    window.alert("삭제처리 중 오류가 발생하였습니다.");
+                })
+             }
         }
 
         onMounted(() => {
@@ -207,7 +252,10 @@ export default {
             changePage,
             setBrandName,
             setCategoryName,
-            search
+            search,
+            checkAllEvnet,
+            checkEvnet,
+            deleteProduct
         }
     }
 }
