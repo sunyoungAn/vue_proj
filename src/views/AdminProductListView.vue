@@ -13,13 +13,13 @@
                             상품번호
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="상품번호">
+                            <input type="text" class="form-control" v-model="state.searchId" placeholder="상품번호">
                         </div>
                         <div class="col-2 py-2">
                             상품명
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="상품명">
+                            <input type="text" class="form-control" v-model="state.searchName" placeholder="상품명" maxlength="100">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -44,7 +44,7 @@
                     
                 </div>
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-success btn-lg">검색</button>
+                    <button class="btn btn-success btn-lg" @click="search()" >검색</button>
                 </div>
             </div>
 
@@ -122,16 +122,11 @@ export default {
                 { id : 5 , value : '샌들/슬리퍼' },
                 { id : 6 , value : '힐/펌프스/부츠/기타' }
             ],
-            categoryList2 : { 
-                0 : '카테고리선택' ,
-                1 : '스니커즈' ,
-                2 : '플랫' ,
-                3 : '로퍼' ,
-                4 : '더비/레이스업' ,
-                5 : '샌들/슬리퍼' ,
-                6 : '힐/펌프스/부츠/기타' },
+            serachCategory : 0,
+            searchId : '',
+            searchName : '',
+            isSearch : false
 
-            serachCategory : 0
         })
 
         // 상품관리리스트페이지에 띄울 정보 모두 가져오기
@@ -166,7 +161,35 @@ export default {
         const changePage = (page) => {
             console.log(page);
             state.page = page - 1; // 상태변수값 변경
-            loadData(); // 데이터가져오기
+            if(state.isSearch === false) {
+                loadData(); // 데이터가져오기
+            } else {
+                search();
+            }
+        }
+
+        // 검색하기
+        const search = () => {
+            if( isNaN(state.searchId)) {
+                window.alert("상품번호는 숫자만 입력해주세요");
+                state.searchId = '';
+                return false;
+            }
+
+            if(state.searchId === '' && state.searchName === '' && state.searchBrand === 0 && state.serachCategory === 0) {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
+            }
+
+            axios.get(`/api/admin/product/search?page=${state.page}&id=${state.searchId}&name=${state.searchName}&brandId=${state.searchBrand}&category=${state.serachCategory}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.productList.content;
+                state.total = res.data.productList.totalElements;
+                state.productBrand = res.data.productBrandMap;
+            }).catch(()=>{
+            })
+
         }
 
         // 상품등록페이지로 이동
@@ -183,7 +206,8 @@ export default {
             moveProductRegister,
             changePage,
             setBrandName,
-            setCategoryName
+            setCategoryName,
+            search
         }
     }
 }
