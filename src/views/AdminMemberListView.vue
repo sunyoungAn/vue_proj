@@ -120,8 +120,10 @@ export default {
         const loadData = () => {
             axios.get(`/api/admin/member/getall?page=${state.page}`).then((res)=>{
                 console.log(res.data);
-                state.rows = res.data.content
-                state.total = res.data.totalElements
+                state.rows = res.data.content;
+                state.total = res.data.totalElements;
+                state.checkAll = false;
+                state.checkList = [];
 
                 for(let idx in state.rows) {
                     if(state.rows[idx].memberStatus !== 3) {
@@ -164,8 +166,10 @@ export default {
 
             axios.get(`/api/admin/member/search?page=${state.page}&memberNumber=${state.memberNumber}&name=${state.name}&email=${state.email}&phoneNumber=${state.phoneNumber}`).then((res)=>{
                 console.log(res.data);
-                state.rows = res.data.content
-                state.total = res.data.totalElements
+                state.rows = res.data.content;
+                state.total = res.data.totalElements;
+                state.checkAll = false;
+                state.checkList = [];
             }).catch(()=>{
             })
         }
@@ -213,8 +217,6 @@ export default {
                     console.log(res.data);
                     window.alert("탈퇴처리가 정상적으로 처리되었습니다.");
                     loadData();
-                    // 내용 초기화
-                    state.checkList = [];
                 }).catch(()=>{
                     window.alert("탈퇴처리 중 오류가 발생하였습니다.");
                 })
