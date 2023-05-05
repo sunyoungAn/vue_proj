@@ -25,7 +25,7 @@
                     
                 </div>
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-success btn-lg" @click="serach()">검색</button>
+                    <button class="btn btn-success btn-lg" @click="search()">검색</button>
                 </div>
             </div>
 
@@ -90,7 +90,8 @@ export default {
                 selectNumber : 1,
                 searchCondition: ''
             },
-            check:[]
+            check:[],
+            isSearch : false
         })
         
         // 공지사항 전체 가져오기
@@ -104,9 +105,15 @@ export default {
         }
 
         // 검색하기
-        const serach = () => {
+        const search = () => {
 
             state.form.selectNumber = state.select;
+
+            if(state.form.searchCondition === '') {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
+            }
 
             axios.post(`/api/admin/notice/search?page=${state.page}`, state.form).then((res)=>{
                 console.log(res.data);
@@ -130,7 +137,12 @@ export default {
         const changePage = (page) => {
             console.log(page);
             state.page = page - 1; // 상태변수값 변경
-            loadData(); // 게시물 읽기
+            state.check = [];
+            if(state.isSearch === false) {
+                loadData(); // 데이터가져오기
+            } else {
+                search();
+            }
         }
 
         // 공지수정페이지로 이동
@@ -176,7 +188,7 @@ export default {
         // 리턴값
         return {
             state,
-            serach,
+            search,
             changeDateFormat,
             moveNoticeEdit,
             moveNoticeRegister,
