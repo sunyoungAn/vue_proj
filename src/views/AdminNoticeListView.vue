@@ -98,8 +98,9 @@ export default {
         const loadData = () => {
             axios.get(`/api/admin/notice/getall?page=${state.page}`).then((res)=>{
                 console.log(res.data);
-                state.rows = res.data.content
-                state.total = res.data.totalElements
+                state.rows = res.data.content;
+                state.total = res.data.totalElements;
+                state.check = [];
             }).catch(()=>{
             })
         }
@@ -117,8 +118,9 @@ export default {
 
             axios.post(`/api/admin/notice/search?page=${state.page}`, state.form).then((res)=>{
                 console.log(res.data);
-                state.rows = res.data.content
-                state.total = res.data.totalElements
+                state.rows = res.data.content;
+                state.total = res.data.totalElements;
+                state.check = [];
             }).catch(()=>{
             })
         }
@@ -137,7 +139,6 @@ export default {
         const changePage = (page) => {
             console.log(page);
             state.page = page - 1; // 상태변수값 변경
-            state.check = [];
             if(state.isSearch === false) {
                 loadData(); // 데이터가져오기
             } else {
@@ -146,12 +147,12 @@ export default {
         }
 
         // 공지수정페이지로 이동
-        const moveNoticeEdit = (no) =>{
-            router.push({path:'/admin/notice/edit', query:{no : no} ,});
+        const moveNoticeEdit = (no) => {
+            router.push({path:'/admin/notice/edit', query:{no : no} });
         }
 
         // 공지등록페이지로 이동
-        const moveNoticeRegister = () =>{
+        const moveNoticeRegister = () => {
             router.push({path:'/admin/notice/register'});
         }
 
