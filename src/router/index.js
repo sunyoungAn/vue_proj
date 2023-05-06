@@ -15,6 +15,7 @@ import AdminInventoryListView from '../views/AdminInventoryListView.vue'
 import AdminContractListView from '../views/AdminContractListView.vue'
 import AdminNoticeRegisterView from '../views/AdminNoticeRegisterView.vue'
 import AdminNoticeEditView from '../views/AdminNoticeEditView.vue'
+import AdminProductEditView from '../views/AdminProductEditView.vue'
 
 const routes = [
   {
@@ -104,6 +105,11 @@ const routes = [
     path: '/admin/notice/edit',
     name: 'adminnoticeedit',
     component: AdminNoticeEditView
+  },
+  {
+    path: '/admin/product/edit',
+    name: 'adminproductedit',
+    component: AdminProductEditView
   }
 ]
 

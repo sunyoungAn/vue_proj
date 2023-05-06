@@ -68,7 +68,7 @@
                             <td class="text-center"><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.checkList" @change="checkEvnet()"></td>
                             <td class="text-center">{{ data.id }}</td>
                             <td>{{ data.productEngName }}</td>
-                            <td>{{ data.productKorName }}</td>
+                            <td @click="moveProductEdit(data.id)" style="cursor: pointer;">{{ data.productKorName }}</td>
                             <td class="text-center">{{ setBrandName(data.id) }}</td>
                             <td class="text-center">{{ setCategoryName(data.category) }}</td>
                         </tr>
@@ -242,6 +242,11 @@ export default {
              }
         }
 
+        // 상품수정페이지로 이동
+        const moveProductEdit = (id) => {
+            router.push({path:'/admin/product/edit', query:{id : id}});
+        }
+
         onMounted(() => {
             loadData();
         })
@@ -255,7 +260,8 @@ export default {
             search,
             checkAllEvnet,
             checkEvnet,
-            deleteProduct
+            deleteProduct,
+            moveProductEdit
         }
     }
 }

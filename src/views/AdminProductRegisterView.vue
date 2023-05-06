@@ -160,7 +160,7 @@ export default {
         const router = useRouter();
         
         const moveProductList = () =>{
-            router.push({path:'/admin/prdouct/list'});
+            router.push({path:'/admin/product/list'});
             //query:{no : code}
         }
 
