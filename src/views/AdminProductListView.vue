@@ -36,7 +36,7 @@
                             카테고리
                         </div>
                         <div class="col-4">
-                            <select class="form-select" v-model="state.serachCategory">
+                            <select class="form-select" v-model="state.searchCategory">
                                 <option v-for="category in state.categoryList" :key="category" :value="category.id">{{ category.value }}</option>
                             </select>
                         </div>
@@ -124,7 +124,7 @@ export default {
                 { id : 5 , value : '샌들/슬리퍼' },
                 { id : 6 , value : '힐/펌프스/부츠/기타' }
             ],
-            serachCategory : 0,
+            searchCategory : 0,
             searchId : '',
             searchName : '',
             isSearch : false,
