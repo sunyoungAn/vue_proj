@@ -271,7 +271,7 @@ export default {
                 alert('카테고리를 선택해주세요.');
                 uselectCategory.value.focus();
                 window.scrollTo({top:'0', behavior:'smooth'});
-                
+                return false;
             }
 
             // 메인이미지 필수체크
@@ -332,6 +332,7 @@ export default {
             axios.post(url, body, {headers}).then((res) => {
                 console.log(res);
                 window.alert("상품정보가 등록되었습니다.");
+                router.push({path:'/admin/product/list'});
             }).catch(()=>{
                 window.alert("상품정보 등록 중 오류가 발생하였습니다.");
             })
