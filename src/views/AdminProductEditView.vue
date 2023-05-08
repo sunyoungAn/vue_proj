@@ -155,7 +155,7 @@
 
             <!-- 버튼 영역 -->
             <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-success btn-lg d-flex justify-content-end me-2">상품수정</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="editProduct()">상품수정</button>
                 <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="moveProductList()">목록으로</button>
             </div>
         </div>
@@ -235,6 +235,7 @@ export default {
                     }
                 }
 
+                console.log("메인이미지아이디"+state.mainImageId);
                 if(state.mainImageId !== null) {
                     state.selectMainFlag = false;
                 }
@@ -306,6 +307,9 @@ export default {
                     state.mainImagedata = null;
                     state.mainImageUrl = require('../assets/upload.png');
                     state.selectMainFlag = true;
+                    state.mainImageId = null;
+                    state.subImageUrls = [];
+                    state.subImageIds = [];
                     loadData();
                 }).catch(()=>{
                     window.alert("삭제처리 중 오류가 발생하였습니다.");
@@ -328,6 +332,7 @@ export default {
                     state.selectSubFlag = true;
                     // state.subImageUrls = state.subImageUrls.splice(idx,1);
                     // state.subImageIds = state.subImageIds.splice(idx,1);
+                    state.tmpSubImageUrls = [];
                     state.subImageUrls = [];
                     state.subImageIds = [];
                     loadData();
@@ -337,6 +342,105 @@ export default {
             }
         } 
 
+        // 상품수정
+        const editProduct = () => {
+
+            // 유효성체크
+            // 상품명(영문) 필수입력체크
+            if(state.data.productEngName === '') {
+                alert('상품명(영문)을 입력해주세요.');
+                uproductEngName.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 상품명(한글) 필수입력체크
+            if(state.data.productKorName === '') {
+                alert('상품명(한글)을 입력해주세요.');
+                uproductKorName.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 브랜드 필수선택체크
+            if(state.selectBrand === 0) {
+                alert('브랜드를 선택해주세요.');
+                uselectBrand.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 카테고리 필수선택체크
+            if(state.selectCategory === 0) {
+                alert('카테고리를 선택해주세요.');
+                uselectCategory.value.focus();
+                window.scrollTo({top:'0', behavior:'smooth'});
+                return false;
+            }
+
+            // 메인이미지 필수체크
+            if(state.selectMainFlag === true && state.mainImagedata === null) {
+                alert('메인이미지를 선택해주세요.');
+                return false;
+            }
+
+            console.log(state.subImageIds.length );
+
+            // 서브이미지 갯수체크
+            let size = 0;
+            if(state.selectSubFlag === true) {
+                if(state.subImagedata !== null) {
+                    size = state.subImagedata.length;
+                }
+                let total = size + state.subImageIds.length;
+                if(total > 2) {
+                    alert('서브이미지는 최대 2개까지 등록가능합니다.');
+                    return false;
+                }
+            }
+
+            const url = `/api/admin/product/edit/${state.id}`;
+            const headers = {"Content-Type":"multipart/form-data"};
+            let body = new FormData();
+
+            const data = {
+                'productEngName' : state.data.productEngName,
+                'productKorName': state.data.productKorName,
+                'brandId': state.selectBrand,
+                'category':state.selectCategory,
+                'modelNumber': state.data.modelNumber,
+                'launchingDate': state.data.launchingDate,
+                'color' : state.data.color,
+                'launchingPrice': state.data.launchingPrice,
+                'sizeMin': state.data.sizeMin,
+                'sizeMax' : state.data.sizeMax,
+                'sizeUnit': state.data.sizeUnit,
+                'gender' : state.data.gender,
+                'resellTarget': state.data.resellTarget,
+                'explanation': state.data.explanation,
+            }
+
+            body.append('data', new Blob([JSON.stringify(data)], { type: "application/json"}));
+            
+            if(state.mainImagedata !== null) {
+                body.append('mainImage', state.mainImagedata );
+            }
+            
+            if(state.subImagedata !== null) {
+                for(let i=0; i <state.subImagedata.length; i++) {
+                    body.append('subImage', state.subImagedata[i] );
+                }
+            }
+            
+            axios.post(url, body, {headers}).then((res) => {
+                console.log(res);
+                window.alert("상품정보가 수정되었습니다.");
+                router.push({path:'/admin/product/list'});
+            }).catch(()=>{
+                window.alert("상품정보 수정 중 오류가 발생하였습니다.");
+            })
+
+        }
 
 
 
@@ -398,7 +502,8 @@ export default {
             handleMainImage,
             handleSubImage,
             deleteMainImage,
-            deleteSubImage
+            deleteSubImage,
+            editProduct
         }
     }
 }
