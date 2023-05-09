@@ -175,13 +175,13 @@ export default {
                 return false;
             }
 
-            if(state.searchId === '' && state.searchName === '' && state.searchBrand === 0 && state.serachCategory === 0) {
+            if(state.searchId === '' && state.searchName === '' && state.searchBrand === 0 && state.searchCategory === 0) {
                 state.isSearch = false;
             } else {
                 state.isSearch = true;
             }
 
-            axios.get(`/api/admin/product/search?page=${state.page}&id=${state.searchId}&name=${state.searchName}&brandId=${state.searchBrand}&category=${state.serachCategory}`).then((res)=>{
+            axios.get(`/api/admin/product/search?page=${state.page}&id=${state.searchId}&name=${state.searchName}&brandId=${state.searchBrand}&category=${state.searchCategory}`).then((res)=>{
                 console.log(res.data);
                 state.rows = res.data.productList.content;
                 state.total = res.data.productList.totalElements;
