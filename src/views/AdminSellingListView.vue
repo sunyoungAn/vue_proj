@@ -151,7 +151,7 @@ export default {
             searchSellingStatus : 0, // 검색조건
             searchExpiryDateStart : '', // 검색조건
             searchExpiryDateEnd : '', // 검색조건
-
+            originalDatas : []
         })
 
         // 판매입찰관리리스트페이지에 띄울 정보 모두 가져오기
@@ -162,6 +162,7 @@ export default {
                 state.total = res.data.total;
                 state.checkAll = false;
                 state.checkList = [];
+                state.originalDatas = res.data.sellingList;
             }).catch(()=>{
             })
         }
@@ -280,7 +281,7 @@ export default {
                 return false;
             }
 
-            if(confirm("선택한 판매입찰의 상태를 변경 하겠습니까?")) {
+            if(confirm("선택한 판매입찰의 상태를 변경하겠습니까?")) {
 
                 let updateData = [];
 
@@ -306,11 +307,34 @@ export default {
             }
         }
 
-
-
         // 판매입찰삭제
         const deleteSelling = () => {
 
+            if(state.checkList.length === 0) {
+                window.alert("대상을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 판매입찰을 삭제하겠습니까?")) {
+                // 거래종료데이터는 삭제 안되게 사전 체크
+                for(let idx in state.originalDatas) {
+                    if(state.checkList.includes(state.originalDatas[idx].id)) {
+                        if(state.originalDatas[idx].sellingStatus === 99) {
+                            window.alert("판매입찰번호" + state.originalDatas[idx].id +"번은 거래종료된 번호로 삭제할 수 없습니다.");
+                            return false;
+                        }
+                    }
+                }
+
+                //체크에 문제가 없으면 삭제처리 실행
+                axios.put(`/api/admin/selling/delete`, state.checkList).then((res)=>{
+                    console.log(res.data);
+                    window.alert("삭제처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                }).catch(()=>{
+                    window.alert("삭제처리 중 오류가 발생하였습니다.");
+                })
+            }
         }
 
         onMounted(() => {
