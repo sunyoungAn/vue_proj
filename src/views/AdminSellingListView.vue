@@ -11,16 +11,15 @@
                     <div class="row mb-3">
                         <div class="col-2 py-2">
                             판매입찰번호
-                            <!-- <p class="text-center">번호</p> -->
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="판매입찰번호">
+                            <input type="text" class="form-control" v-model="state.searchId" placeholder="판매입찰번호">
                         </div>
                         <div class="col-2 py-2">
                             상품번호
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="상품번호">
+                            <input type="text" class="form-control" v-model="state.searchProductId" placeholder="상품번호">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -28,17 +27,15 @@
                             판매자번호
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="판매자번호">
+                            <input type="text" class="form-control" v-model="state.searchMemberNumber" placeholder="판매자번호">
                         </div>
                         <div class="col-2 py-2">
                             판매상태
                         </div>
                         <div class="col-4">
-                            <select class="form-select brand_select" id="inputGroupSelect01">
-                                <option selected>Choose...</option>
-                                <option value="1">판매상태1</option>
-                                <option value="2">판매상태2</option>
-                            </select>
+                            <select class="form-select" v-model="state.searchSellingStatus">
+                                    <option v-for="status in state.statusList" :key="status" :value="status.id">{{ status.value }}</option>
+                                </select>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -46,85 +43,65 @@
                             만료일
                         </div>
                         <div class="col-4">
-                            <input type="date" class="form-control">
+                            <input type="date" class="form-control" v-model="state.searchExpiryDateStart">
                         </div>
                         <div class="col-2 py-2">
                             <p class="text-center">~</p>
                         </div>
                         <div class="col-4">
-                            <input type="date" class="form-control">
+                            <input type="date" class="form-control" v-model="state.searchExpiryDateEnd">
                         </div>
                     </div>
                     
                 </div>
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-success btn-lg">검색</button>
+                    <button class="btn btn-success btn-lg" @click="search()">검색</button>
                 </div>
             </div>
 
             <!-- 검색 결과-->
             <div>
-                <table class="table">
+                <table class="table align-middle">
                     <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">판매입찰번호</th>
+                        <tr class="text-center">
+                            <th scope="col" width="50px">
+                                <input class="form-check-input" type="checkbox" :checked="state.checkAll" @change="checkAllEvnet()"> 
+                            </th>
+                            <th scope="col" width="120px">판매입찰번호</th>
                             <th scope="col">상품번호</th>
-                            <th scope="col">사이즈</th>
+                            <th scope="col" >사이즈</th>
                             <th scope="col">가격</th>
                             <th scope="col">판매자번호</th>
-                            <th scope="col">상태</th>
+                            <th scope="col" width="150px">판매상태</th>
                             <th scope="col">만료일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>11</td> <!-- TODO 상품상세페이지로 이동하게 할까?-->
-                            <td>250</td>
-                            <td>140,000</td>
-                            <td>35</td>
+                        <tr class="text-center" v-for="data of state.rows" :key="data">
+                            <td><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.checkList" @change="checkEvnet()"></td>
+                            <td>{{ data.id }}</td>
                             <td>
-                                <select class="form-select brand_select" id="inputGroupSelect01">
-                                    <option selected>검수중</option>
-                                    <option value="1">입찰중</option>
-                                    <option value="2">입찰중</option>
+                                <el-popover placement="top-start" :title=data.productEngName :width="400" trigger="hover" :content=data.productKorName>
+                                    <template #reference>
+                                        {{ data.productId }}
+                                    </template> 
+                                </el-popover>
+                            </td>
+                            <td>{{ data.productSize }}</td>
+                            <td>{{ changePriceFormat(data.wishPrice) }}</td>
+                            <td>
+                                <el-popover placement="top-start" :title=data.name :width="300" trigger="hover" :content=data.email>
+                                    <template #reference>
+                                        {{ data.memberNumber }}
+                                    </template> 
+                                </el-popover>
+                            </td>
+                            <td>
+                                <select class="form-select" v-model="data.sellingStatus">
+                                    <option v-for="status in state.statusList" :key="status" :value="status.id">{{ status.value }}</option>
                                 </select>
                             </td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>11</td>
-                            <td>250</td>
-                            <td>140,000</td>
-                            <td>35</td>
-                            <td>
-                                <select class="form-select brand_select" id="inputGroupSelect01">
-                                    <option selected>검수중</option>
-                                    <option value="1">입찰중</option>
-                                    <option value="2">입찰중</option>
-                                </select>
-                            </td>
-                            <td>2023/04/07</td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>11</td>
-                            <td>250</td>
-                            <td>140,000</td>
-                            <td>35</td>
-                            <td>
-                                <select class="form-select brand_select" id="inputGroupSelect01">
-                                    <option selected>입찰중</option>
-                                    <option value="1">검수중</option>
-                                    <option value="2">입찰중</option>
-                                </select>
-                            </td>
-                            <td>2023/04/07</td>
+                            <td>{{ changeDateFormat(data.expiryDate) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -132,36 +109,21 @@
             
             <!-- 페이지 네이션-->
             <nav class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                    </li>
-                </ul>
+                <el-pagination background layout="prev, pager, next" @current-change="changePage" :total="state.total" />
             </nav>
 
-            <div class="d-flex justify-content-center mt-3">
+            <div class="d-flex justify-content-center mt-5">
                 <button class="btn btn-success btn-lg d-flex justify-content-end me-2">상태변경</button>
                 <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">판매삭제</button>
             </div>
-
-
         </div>
-
     </div>
 </template>
 
 <script>
 import AdminSubMenu from '@/components/AdminSubMenu.vue'
+import { onMounted, reactive } from 'vue'; 
+import axios from 'axios';
 
 export default {
     name: 'SubMenu',
@@ -169,9 +131,164 @@ export default {
         AdminSubMenu
     },
     setup () {
+
+        const state = reactive({
+            rows : [],
+            total : 0,
+            page : 0,
+            isSearch : false,
+            checkAll : false,
+            checkList : [],
+            statusList : [
+                { id : 0, value : '판매상태선택'},
+                { id : 1, value : '입찰중'},
+                { id : 2, value : '기한만료'},
+                { id : 99, value : '거래종료'},
+            ],
+            searchId : '', // 검색조건
+            searchProductId : '', // 검색조건
+            searchMemberNumber : '', // 검색조건
+            searchSellingStatus : 0, // 검색조건
+            searchExpiryDateStart : '', // 검색조건
+            searchExpiryDateEnd : '', // 검색조건
+
+        })
+
+        // 판매입찰관리리스트페이지에 띄울 정보 모두 가져오기
+        const loadData = () => {
+            axios.get(`/api/admin/selling/getall?page=${state.page}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.sellingList;
+                state.total = res.data.total;
+                state.checkAll = false;
+                state.checkList = [];
+            }).catch(()=>{
+            })
+        }
+
+        // 페이징기능
+        const changePage = (page) => {
+            console.log(page);
+            state.page = page - 1; // 상태변수값 변경
+            if(state.isSearch === false) {
+                loadData(); // 데이터가져오기
+            } else {
+                search();
+            }
+        }
+
+        // 검색하기
+        const search = () => {
+            
+            // 유효성검사
+            if( isNaN(state.searchId)) {
+                window.alert("판매입찰번호는 숫자만 입력해주세요.");
+                state.searchId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchProductId)) {
+                window.alert("상품번호는 숫자만 입력해주세요.");
+                state.searchProductId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchMemberNumber)) {
+                window.alert("판매자번호는 숫자만 입력해주세요.");
+                state.searchMemberNumber = '';
+                return false;
+            }
+
+            // 날짜 유효성체크
+            if(state.searchExpiryDateStart !== '' && state.searchExpiryDateEnd !== '') {
+                let startDate = new Date(state.searchExpiryDateStart);
+                let endDate = new Date(state.searchExpiryDateEnd);
+                if(startDate>endDate) {
+                    window.alert("만료일(부터)은 만료일(까지)보다 빠른날짜로 설정해주세요.");
+                    state.searchExpiryDateStart = '';
+                    state.searchExpiryDateEnd = '';
+                    return false;
+                }
+            }
+
+            // 검색플래그 설정
+            if(state.searchId === '' && state.searchProductId === '' && 
+                state.searchMemberNumber === '' && state.searchBrand === 0 &&
+                state.searchExpiryDateStart === '' && state.searchExpiryDateEnd === '') {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
+            }
+
+            axios.get(`/api/admin/selling/search?page=${state.page}&id=${state.searchId}&productId=${state.searchProductId}&memberNumber=${state.searchMemberNumber}&sellingStatus=${state.searchSellingStatus}&expiryDateStart=${state.searchExpiryDateStart}&expiryDateEnd=${state.searchExpiryDateEnd}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.sellingList;
+                state.total = res.data.total;
+                state.checkAll = false;
+                state.checkList = [];
+            }).catch(()=>{
+            })
+
+
+        }
+
+
+        // 전체선택 처리
+        const checkAllEvnet = () => {
+            if(state.checkAll === false) {
+                for(let idx in state.rows) {
+
+                    // 이미 선택되어 있는 경우에는 중복선택 제외하기
+                    if(state.checkList.includes(state.rows[idx].id)) {
+                        continue;
+                    }
+                    state.checkList.push(state.rows[idx].id);
+                }
+                state.checkAll = true;
+            } else {
+                state.checkList = [];
+                state.checkAll = false;
+            }
+        }
+
+        // 체크박스 개별 처리
+        const checkEvnet = () => {
+            if(state.checkList.length === state.rows.length) {
+                state.checkAll = true;
+            } else {
+                state.checkAll = false;
+            }
+        }
+
+        // 날짜형식변환 yyyy/mm/dd
+        const changeDateFormat = (data) => {
+            let date = new Date(data);
+            let year = date.getFullYear();
+            let month = ("0" + (1 + date.getMonth())).slice(-2);
+            let day = ("0" + date.getDate()).slice(-2);
+
+            return year + "/" + month + "/" + day;
+        }
+
+        // 금액형식변환 세자리마다 콤마추가
+        const changePriceFormat = (data) => {
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        onMounted(() => {
+            loadData();
+        })
         
 
-        return {}
+        return {
+            state,
+            checkAllEvnet,
+            checkEvnet,
+            changeDateFormat,
+            changePage,
+            search,
+            changePriceFormat
+        }
     }
 }
 </script>
