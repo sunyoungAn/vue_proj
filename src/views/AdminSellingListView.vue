@@ -113,8 +113,8 @@
             </nav>
 
             <div class="d-flex justify-content-center mt-5">
-                <button class="btn btn-success btn-lg d-flex justify-content-end me-2">상태변경</button>
-                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2">판매삭제</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-end me-2" @click="editSellingStatus()">상태변경</button>
+                <button class="btn btn-success btn-lg d-flex justify-content-start ms-2" @click="deleteSelling()">판매삭제</button>
             </div>
         </div>
     </div>
@@ -228,8 +228,6 @@ export default {
                 state.checkList = [];
             }).catch(()=>{
             })
-
-
         }
 
 
@@ -275,6 +273,46 @@ export default {
             return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
+        // 판매상태변경
+        const editSellingStatus = () => {
+            if(state.checkList.length === 0) {
+                window.alert("대상을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 판매입찰의 상태를 변경 하겠습니까?")) {
+
+                let updateData = [];
+
+                for(let idx in state.rows) {
+
+                    if(state.checkList.includes(state.rows[idx].id)) {
+
+                        if(state.rows[idx].sellingStatus === 0) {
+                            window.alert("판매입찰번호" + state.rows[idx].id +"번의 변경할 상태를 선택해주세요.");
+                            return false;
+                        }
+                        updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus });
+                    }
+                }
+
+                axios.put(`/api/admin/selling/edit`, updateData).then((res)=>{
+                    console.log(res.data);
+                    window.alert("상태변경처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                }).catch(()=>{
+                    window.alert("상태변경처리 중 오류가 발생하였습니다.");
+                })
+            }
+        }
+
+
+
+        // 판매입찰삭제
+        const deleteSelling = () => {
+
+        }
+
         onMounted(() => {
             loadData();
         })
@@ -287,7 +325,9 @@ export default {
             changeDateFormat,
             changePage,
             search,
-            changePriceFormat
+            changePriceFormat,
+            editSellingStatus,
+            deleteSelling
         }
     }
 }
