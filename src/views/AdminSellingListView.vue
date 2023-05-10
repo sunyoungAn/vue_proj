@@ -34,8 +34,8 @@
                         </div>
                         <div class="col-4">
                             <select class="form-select" v-model="state.searchSellingStatus">
-                                    <option v-for="status in state.statusList" :key="status" :value="status.id">{{ status.value }}</option>
-                                </select>
+                                <option v-for="status in state.statusList" :key="status" :value="status.id">{{ status.value }}</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-3">
