@@ -106,10 +106,10 @@ export default {
             rows : [],
             total : 0,
             page: 0,
-            memberNumber : '',
-            name : '',
-            email : '',
-            phoneNumber : '',
+            memberNumber : '', // 검색조건
+            name : '', // 검색조건
+            email : '', // 검색조건
+            phoneNumber : '', // 검색조건
             checkList:[],
             checkAll : false,
             targetMemberList : 0,
@@ -124,6 +124,11 @@ export default {
                 state.total = res.data.totalElements;
                 state.checkAll = false;
                 state.checkList = [];
+                // 검색조건 초기화
+                state.memberNumber = '';
+                state.name = '';
+                state.email = ''; 
+                state.phoneNumber = '';
 
                 for(let idx in state.rows) {
                     if(state.rows[idx].memberStatus !== 3) {

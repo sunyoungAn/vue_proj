@@ -163,6 +163,13 @@ export default {
                 state.checkAll = false;
                 state.checkList = [];
                 state.originalDatas = res.data.sellingList;
+                // 검색조건 초기화
+                state.searchId = '';
+                state.searchProductId = '';
+                state.searchMemberNumber = '';
+                state.searchSellingStatus = 0;
+                state.searchExpiryDateStart = '';
+                state.searchExpiryDateEnd = '';
             }).catch(()=>{
             })
         }

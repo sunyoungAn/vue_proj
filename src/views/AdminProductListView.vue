@@ -113,7 +113,6 @@ export default {
             total : 0,
             page : 0,
             brandList : [],
-            searchBrand : 0,
             productBrand : {},
             categoryList : [
                 { id : 0 , value : '카테고리선택' },
@@ -124,9 +123,10 @@ export default {
                 { id : 5 , value : '샌들/슬리퍼' },
                 { id : 6 , value : '힐/펌프스/부츠/기타' }
             ],
-            searchCategory : 0,
-            searchId : '',
-            searchName : '',
+            searchBrand : 0, // 검색조건
+            searchCategory : 0, // 검색조건
+            searchId : '', // 검색조건
+            searchName : '', // 검색조건
             isSearch : false,
             checkAll : false,
             checkList : []
@@ -142,6 +142,11 @@ export default {
                 state.productBrand = res.data.productBrandMap;
                 state.checkAll = false;
                 state.checkList = [];
+                // 검색조건 초기화
+                state.searchBrand = 0;
+                state.searchCategory = 0;
+                state.searchId = '' ;
+                state.searchName = '';
             }).catch(()=>{
             })
         }
