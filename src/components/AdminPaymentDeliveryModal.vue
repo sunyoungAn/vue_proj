@@ -38,8 +38,6 @@
                     <h4>| 배송메세지</h4>
                     <h5 class="ps-5 py-2">2023년 4월 22일</h5>
                 </div>
-
-                
             </div>
             <div class="modal-footer">   
                 <button type="button" class="btn btn-success btn-lg" @click="closeModal()">Close</button>
@@ -89,12 +87,10 @@ export default {
 
         }
 
-
         // 모달창 열릴 때 불러와질예정
         onMounted(() => {
             loadData();
         })
-
 
         return {
             state,
