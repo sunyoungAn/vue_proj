@@ -13,7 +13,7 @@
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 결제금액</h4>
-                    <h5 class="ps-5 py-2">{{ state.price }}</h5>
+                    <h5 class="ps-5 py-2">{{ state.price }}원</h5>
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 결제일</h4>
