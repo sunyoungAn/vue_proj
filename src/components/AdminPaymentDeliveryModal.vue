@@ -10,33 +10,33 @@
                 <!-- 결제정보 -->
                 <div class="mb-3 ms-3">
                     <h4>| 결제수단</h4>
-                    <h5 class="ps-5 py-2">신용카드</h5>
+                    <h5 class="ps-5 py-2">{{state.paymentType}}</h5> <!-- TODO 결제구현 한 것 보고 이름 매칭 해주기-->
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 결제금액</h4>
-                    <h5 class="ps-5 py-2">300,000원</h5>
+                    <h5 class="ps-5 py-2">{{ state.price }}원</h5>
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 결제일</h4>
-                    <h5 class="ps-5 py-2">2023년 4월 22일</h5>
+                    <h5 class="ps-5 py-2">{{ state.paymentDate }}</h5>
                 </div>
 
                 <!-- 배송정보 -->
                 <div class="mb-3 ms-3">
                     <h4>| 받는사람</h4>
-                    <h5 class="ps-5 py-2">2023년 4월 22일</h5>
+                    <h5 class="ps-5 py-2">{{ state.name }}</h5>
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 휴대폰번호</h4>
-                    <h5 class="ps-5 py-2">2023년 4월 22일</h5>
+                    <h5 class="ps-5 py-2">{{ changePhoneNumberFormat(state.phoneNumber) }}</h5>
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 배송주소</h4>
-                    <h5 class="ps-5 py-2">2023년 4월 22일</h5>
+                    <h5 class="ps-5 py-2">{{ '(' + state.zipCode +') ' + state.address + ' ' + state.subAddress }}</h5>
                 </div>
                 <div class="mb-3 ms-3">
                     <h4>| 배송메세지</h4>
-                    <h5 class="ps-5 py-2">2023년 4월 22일</h5>
+                    <h5 class="ps-5 py-2">{{ state.message }}</h5>
                 </div>
             </div>
             <div class="modal-footer">   
@@ -48,7 +48,7 @@
 
 <script>
 import { onMounted, reactive } from 'vue'; 
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
 
@@ -67,24 +67,57 @@ export default {
             id : props.id,
             openmodal : props.openmodal,
             paymentType : '',
-            price : 0,
-            paymentDate : ''
+            price : '',
+            paymentDate : '',
+            name : '',
+            phoneNumber : '',
+            address : '',
+            subAddress : '',
+            zipCode : '',
+            message : ''
         })
-
-        const closeModal = () => {
-            context.emit('closemodal', false);
-        }
 
         const loadData = () => {
 
-            // axios.get(`/api/admin/inventory/getpayment/${state.id}`).then((res)=>{
-            //     console.log(res.data);
-            //     state.paymentType = res.data.paymentType;
-            //     state.price = changePriceFormat(res.data.price);
-            //     state.paymentDate = changeDateFormat(res.data.registDate);
-            // }).catch(()=>{
-            // })
+            axios.get(`/api/admin/contract/getpayment/${state.id}`).then((res)=>{
+                console.log(res.data);
+                state.paymentType = res.data.paymentType;
+                state.price = changePriceFormat(res.data.price);
+                state.paymentDate = changeDateFormat(res.data.registDate);
+                state.name = res.data.name;
+                state.phoneNumber = res.data.phoneNumber;
+                state.address = res.data.address;
+                state.subAddress = res.data.subAddress;
+                state.zipCode = res.data.zipCode;
+                state.message = res.data.message;
+            }).catch(()=>{
+            })
 
+        }
+
+        // 날짜형식변환 yyyy/mm/dd
+        const changeDateFormat = (data) => {
+            let date = new Date(data);
+            let year = date.getFullYear();
+            let month = ("0" + (1 + date.getMonth())).slice(-2);
+            let day = ("0" + date.getDate()).slice(-2);
+
+            return year + "/" + month + "/" + day;
+        }
+
+        // 금액형식변환 세자리마다 콤마추가
+        const changePriceFormat = (data) => {
+            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // 휴대폰번호형식변환 000-0000-0000
+        const changePhoneNumberFormat = (data) => {
+            return data.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+        }
+
+        // 모달창 닫기
+        const closeModal = () => {
+            context.emit('closemodal', false);
         }
 
         // 모달창 열릴 때 불러와질예정
@@ -94,7 +127,8 @@ export default {
 
         return {
             state,
-            closeModal
+            closeModal,
+            changePhoneNumberFormat
         }
     }
 }

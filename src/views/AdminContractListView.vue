@@ -41,7 +41,7 @@
                             판매상태
                         </div>
                         <div class="col-4">
-                            <select class="form-select brand_select" v-model="state.searchSellingStatus">
+                            <select class="form-select" v-model="state.searchSellingStatus">
                                 <option v-for="status in state.sellingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
                             </select>
                         </div>
@@ -49,7 +49,7 @@
                             구매상태
                         </div>
                         <div class="col-4">
-                            <select class="form-select brand_select" v-model="state.searchBuyingStatus">
+                            <select class="form-select" v-model="state.searchBuyingStatus">
                                 <option v-for="status in state.buyingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
                             </select>
                         </div>
@@ -99,7 +99,13 @@
                     <tbody>
                         <tr class="text-center" v-for="data of state.rows" :key="data">
                             <td><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.checkList" @change="checkEvnet()"></td>
-                            <td>{{ data.id }}</td>
+                            <td>
+                                <el-popover placement="left" :title=state.contractDiv[data.contractDiv] :width="200" trigger="hover" content="">
+                                    <template #reference>
+                                        {{ data.id }}
+                                    </template> 
+                                </el-popover>
+                            </td>
                             <td>
                                 <el-popover placement="top-start" :title=data.productEngName :width="400" trigger="hover" :content=data.productKorName+state.sizeLabel+data.productSize>
                                     <template #reference>
@@ -126,19 +132,45 @@
                                 </el-popover>
                             </td>
                             <td>{{ changeDateFormat(data.contractDate) }}</td>
-                            <td v-if="data.sellingStatus !== null">
+
+                            <!-- 판매상태 -->
+                            <!-- 보관판매인 경우 -->
+                            <td v-if="data.sellingStatus !== null && data.contractDiv === 1">
+                                <select class="form-select" v-model="data.sellingStatus">
+                                    <option v-for="status in state.inventorySellingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
+                                </select>
+                            </td>
+                            <!-- 입찰거래인 경우 -->
+                            <td v-else-if="data.sellingStatus !== null && data.contractDiv === 2">
                                 <select class="form-select" v-model="data.sellingStatus">
                                     <option v-for="status in state.sellingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
                                 </select>
                             </td>
+                            <!-- 브랜드배송인 경우 -->
                             <td v-else>
                                 브랜드배송
                             </td>
-                            <td>
+
+                            <!-- 구매상태 -->
+                            <!-- 빠른배송(보관판매물건구매)인 경우 -->
+                            <td v-if="data.contractDiv === 1">
+                                <select class="form-select" v-model="data.buyingStatus">
+                                    <option v-for="status in state.inventoryBuyingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
+                                </select>
+                            </td>
+                            <!-- 입찰거래인 경우 -->
+                            <td v-else-if="data.contractDiv === 2">
                                 <select class="form-select" v-model="data.buyingStatus">
                                     <option v-for="status in state.buyingStatusList" :key="status" :value="status.id">{{ status.value }}</option>
                                 </select>
                             </td>
+                            <!-- 브랜드배송인 경우 -->
+                            <td v-else>
+                                <select class="form-select" v-model="data.buyingStatus">
+                                    <option v-for="status in state.brandStatusList" :key="status" :value="status.id">{{ status.value }}</option>
+                                </select>
+                            </td>
+                            
                             <td v-if="data.paidDate !== null">
                                 <el-popover placement="top-start" title="정산금액" :width="150" trigger="hover" :content=changePriceFormat(data.paidPrice)>
                                     <template #reference>
@@ -197,47 +229,66 @@ export default {
             checkList : [],
             sellingStatusList : [
                 { id : 0, value : '판매상태선택'}, 
-                { id : 21, value : '발송요청'}, // 21~27 진행중
+                { id : 21, value : '발송요청'},
                 { id : 22, value : '발송완료'},
                 { id : 23, value : '입고대기'},
                 { id : 24, value : '입고완료'},
                 { id : 25, value : '검수중'},
                 { id : 26, value : '검수불합격'},
                 { id : 27, value : '검수합격'},
-                { id : 50, value : '정산완료'}, // 50~53 종료
+                { id : 50, value : '정산완료'},
                 { id : 51, value : '취소완료'},
                 { id : 52, value : '불합격반송'},
                 { id : 53, value : '회수완료'},
             ],
-            inventoryStatusList : [
+            inventorySellingStatusList : [
                 { id : 0, value : '판매상태선택'}, 
-                { id : 50, value : '정산완료'}, // 50~53 종료
+                { id : 50, value : '정산완료'},
                 { id : 51, value : '취소완료'},
                 { id : 52, value : '불합격반송'},
                 { id : 53, value : '회수완료'},
             ],
             buyingStatusList : [
                 { id : 0, value : '구매상태선택'},
-                { id : 31, value : '대기중'}, // 31~45 진행중
+                { id : 31, value : '대기중'}, 
                 { id : 32, value : '발송완료'},
                 { id : 33, value : '입고대기'},
                 { id : 34, value : '입고완료'},
                 { id : 35, value : '검수중'},
                 { id : 36, value : '거래실패'},
                 { id : 37, value : '검수합격'},
-                { id : 38, value : '배송중'}, // 브랜드, 거래 모두 포함
-                { id : 39, value : '상품준비중'}, //39~45 브랜드
+                { id : 38, value : '배송중'}, 
+                { id : 60, value : '배송완료'}, 
+                { id : 61, value : '취소완료'},
+                { id : 62, value : '반품완료'},
+                { id : 63, value : '교환완료'},
+            ],
+            inventoryBuyingStatusList : [
+                { id : 0, value : '구매상태선택'},
+                { id : 38, value : '배송중'}, 
+                { id : 60, value : '배송완료'}, 
+                { id : 61, value : '취소완료'},
+                { id : 62, value : '반품완료'},
+                { id : 63, value : '교환완료'},
+            ],
+            brandStatusList : [
+                { id : 0, value : '구매상태선택'},
+                { id : 38, value : '배송중'},
+                { id : 39, value : '상품준비중'},
                 { id : 40, value : '반품신청'},
                 { id : 41, value : '접수완료'},
                 { id : 42, value : '회수중'},
                 { id : 43, value : '회수완료'},
                 { id : 44, value : '교환신청'},
                 { id : 45, value : '교환중'},
-                { id : 60, value : '배송완료'}, // 60~63 종료
+                { id : 60, value : '배송완료'},
                 { id : 61, value : '취소완료'},
                 { id : 62, value : '반품완료'},
                 { id : 63, value : '교환완료'},
             ],
+
+            contractDiv :
+                { 1 : '거래구분 - 보관판매' , 2 : '거래구분 - 입찰거래', 3 : '거래구분 - 브랜드배송' },
             searchId : '', // 검색조건
             searchProductId : '', // 검색조건
             searchSellerMemberNumber : '', // 검색조건
@@ -250,7 +301,7 @@ export default {
             sizeLabel : ' - size : ' 
         })
         
-        // 보관상품관리리스트페이지에 띄울 정보 모두 가져오기
+        // 거래관리리스트페이지에 띄울 정보 모두 가져오기
         const loadData = () => {
             axios.get(`/api/admin/contract/getall?page=${state.page}`).then((res)=>{
                 console.log(res.data);
@@ -285,6 +336,63 @@ export default {
 
         // 검색하기
         const search = () => {
+
+            // 유효성검사
+            if( isNaN(state.searchId)) {
+                window.alert("보관상품번호는 숫자만 입력해주세요.");
+                state.searchId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchProductId)) {
+                window.alert("상품번호는 숫자만 입력해주세요.");
+                state.searchProductId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchSellerMemberNumber)) {
+                window.alert("판매자번호는 숫자만 입력해주세요.");
+                state.searchSellerMemberNumber = '';
+                return false;
+            }
+
+            if( isNaN(state.searchBuyerMemberNumber)) {
+                window.alert("구매자번호는 숫자만 입력해주세요.");
+                state.searchBuyerMemberNumber = '';
+                return false;
+            }
+
+            // 날짜 유효성체크
+            if(state.searchContractDateStart !== '' && state.searchContractDateEnd !== '') {
+                let startDate = new Date(state.searchContractDateStart);
+                let endDate = new Date(state.searchContractDateEnd);
+                if(startDate>endDate) {
+                    window.alert("거래체결일(부터)은 거래체결일(까지)보다 빠른날짜로 설정해주세요.");
+                    state.searchContractDateStart = '';
+                    state.searchContractDateEnd = '';
+                    return false;
+                }
+            }
+
+            // 검색플래그 설정
+            if(state.searchId === '' && state.searchProductId === '' && 
+                state.searchSellerMemberNumber === '' && state.searchBuyerMemberNumber === '' &&
+                state.searchSellingStatus === 0 && state.searchBuyingStatus === 0 &&
+                state.searchContractDateStart === '' && state.searchContractDateEnd === '') {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
+            }
+
+            axios.get(`/api/admin/contract/search?page=${state.page}&id=${state.searchId}&productId=${state.searchProductId}&sellerMemberNumber=${state.searchSellerMemberNumber}&buyerMemberNumber=${state.searchBuyerMemberNumber}&sellingStatus=${state.searchSellingStatus}&buyingStatus=${state.searchBuyingStatus}&contractDateStart=${state.searchContractDateStart}&contractDateEnd=${state.searchContractDateEnd}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.contractList;
+                state.total = res.data.total;
+                state.checkAll = false;
+                state.checkList = [];
+            }).catch(()=>{
+            })
+
 
         }
 
@@ -330,10 +438,59 @@ export default {
             return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-
-        // 상태변경
+        // 상태변경 TODO 지수씨와 이야기후 기능확정 예정 - 이야기 내용에 따라 판매입찰, 구매입찰, 보관판매관리 내용 변동 가능성 있음
         const editStatus = () => {
 
+            if(state.checkList.length === 0) {
+                window.alert("대상을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 거래의 상태를 변경하겠습니까?")) {
+
+                let updateData = [];
+
+                for(let idx in state.rows) {
+                    
+                    if(state.checkList.includes(state.rows[idx].id)) {
+
+                        if(state.rows[idx].contractDiv === 1) {
+                            // 보관상품거래의 경우
+
+                            // 구매상태 미선택 체크
+                            if(state.rows[idx].buyingStatus === 0) {
+                                window.alert("거래번호" + state.rows[idx].id +"번의 변경할 구매상태를 선택해주세요.");
+                                return false;
+                            }
+                            updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus, buyingStatus : state.rows[idx].buyingStatus });
+                        
+                        } else if (state.rows[idx].contractDiv === 2) {
+                            // 입찰거래의 경우
+
+
+                        } else {
+                            // 브랜드상품 구매의 경우
+
+                            // 구매상태 미선택 체크
+                            if(state.rows[idx].buyingStatus === 0) {
+                                window.alert("거래번호" + state.rows[idx].id +"번의 변경할 구매상태를 선택해주세요.");
+                                return false;
+                            }
+                            updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus, buyingStatus : state.rows[idx].buyingStatus });
+
+                        }
+                    }
+
+                }
+
+                // axios.put(`/api/admin/contract/edit`, updateData).then((res)=>{
+                //     console.log(res.data);
+                //     window.alert("상태변경처리가 정상적으로 처리되었습니다.");
+                //     loadData();
+                // }).catch(()=>{
+                //     window.alert("상태변경처리 중 오류가 발생하였습니다.");
+                // })
+            }
         }
 
 
