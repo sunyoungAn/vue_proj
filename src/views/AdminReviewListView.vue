@@ -84,25 +84,11 @@
             
             <!-- 페이지 네이션-->
             <nav class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                    </li>
-                </ul>
+                <el-pagination background layout="prev, pager, next" @current-change="changePage" :total="state.total" />
             </nav>
 
-            <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-success btn-lg d-flex justify-content-start">리뷰삭제</button>
+            <div class="d-flex justify-content-center mt-5">
+                <button class="btn btn-success btn-lg d-flex justify-content-start" @click="deleteReview()">리뷰삭제</button>
             </div> 
 
         </div>
@@ -112,6 +98,8 @@
 
 <script>
 import AdminSubMenu from '@/components/AdminSubMenu.vue'
+import { onMounted, reactive } from 'vue'; 
+import axios from 'axios';
 
 export default {
     name: 'SubMenu',
@@ -119,9 +107,147 @@ export default {
         AdminSubMenu
     },
     setup () {
+
+        // 상태변수
+        const state = reactive({
+            rows : [],
+            total : 0,
+            page : 0,
+            isSearch : false,
+            checkAll : false,
+            checkList : [],
+            searchId : '', // 검색조건
+            searchProductId : '', // 검색조건
+            searchMemberNumber : '', // 검색조건
+            searchContent : '' // 검색조건
+        })
+
+        // 리뷰관리리스트페이지에 띄울 정보 모두 가져오기
+        const loadData = () => {
+            axios.get(`/api/admin/review/getall?page=${state.page}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.reviewList;
+                state.total = res.data.total;
+                state.checkAll = false;
+                state.checkList = [];
+                // 검색조건 초기화
+                state.searchId = '';
+                state.searchProductId = '';
+                state.searchMemberNumber = '';
+                state.searchContent = '';
+            }).catch(()=>{
+            })
+        }
+
+        // 페이징기능
+        const changePage = (page) => {
+            console.log(page);
+            state.page = page - 1; // 상태변수값 변경
+            if(state.isSearch === false) {
+                loadData(); // 데이터가져오기
+            } else {
+                search();
+            }
+        }
+
+        // 검색하기
+        const search = () => {
+            // 유효성검사
+            if( isNaN(state.searchId)) {
+                window.alert("리뷰번호는 숫자만 입력해주세요.");
+                state.searchId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchProductId)) {
+                window.alert("상품번호는 숫자만 입력해주세요.");
+                state.searchProductId = '';
+                return false;
+            }
+
+            if( isNaN(state.searchMemberNumber)) {
+                window.alert("회원번호는 숫자만 입력해주세요.");
+                state.searchMemberNumber = '';
+                return false;
+            }
+
+            // 검색플래그 설정
+            if(state.searchId === '' && state.searchProductId === '' && 
+                state.searchMemberNumber === '' && state.searchContent === '' ) {
+                state.isSearch = false;
+            } else {
+                state.isSearch = true;
+            }
+
+            axios.get(`/api/admin/review/search?page=${state.page}&id=${state.searchId}&productId=${state.searchProductId}&memberNumber=${state.searchMemberNumber}&buyingStatus=${state.searchBuyingStatus}&expiryDateStart=${state.searchExpiryDateStart}&expiryDateEnd=${state.searchExpiryDateEnd}`).then((res)=>{
+                console.log(res.data);
+                state.rows = res.data.reviewList;
+                state.total = res.data.total;
+                state.checkAll = false;
+                state.checkList = [];
+            }).catch(()=>{
+            })
+
+        }
+
+        // 전체선택 처리
+        const checkAllEvnet = () => {
+            if(state.checkAll === false) {
+                for(let idx in state.rows) {
+
+                    // 이미 선택되어 있는 경우에는 중복선택 제외하기
+                    if(state.checkList.includes(state.rows[idx].id)) {
+                        continue;
+                    }
+                    state.checkList.push(state.rows[idx].id);
+                }
+                state.checkAll = true;
+            } else {
+                state.checkList = [];
+                state.checkAll = false;
+            }
+        }
+
+        // 체크박스 개별 처리
+        const checkEvnet = () => {
+            if(state.checkList.length === state.rows.length) {
+                state.checkAll = true;
+            } else {
+                state.checkAll = false;
+            }
+        }
+
+        // 날짜형식변환 yyyy/mm/dd
+        const changeDateFormat = (data) => {
+            let date = new Date(data);
+            let year = date.getFullYear();
+            let month = ("0" + (1 + date.getMonth())).slice(-2);
+            let day = ("0" + date.getDate()).slice(-2);
+
+            return year + "/" + month + "/" + day;
+        }
+
+        // 리뷰삭제
+        const deleteReview = () => {
+
+        }
+
+        onMounted(() => {
+            loadData();
+        })
+
+
         
 
-        return {}
+        return {
+            state,
+            checkAllEvnet,
+            checkEvnet,
+            changeDateFormat,
+            changePage,
+            search,
+            deleteReview
+        }
     }
 }
 </script>
