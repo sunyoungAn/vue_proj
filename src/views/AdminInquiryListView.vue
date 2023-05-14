@@ -71,7 +71,7 @@
                             </td>
                             <td>{{ data.id }}</td>
                             <td>{{ data.category }}</td>
-                            <td @click="moveReply(data.id)" style="cursor: pointer;">{{ data.title }}</td>
+                            <td @click="moveInquiryReply(data.id)" style="cursor: pointer;">{{ data.title }}</td>
                             <td>
                                 <el-popover placement="top-start" :title=data.name :width="300" trigger="hover" :content=data.email>
                                     <template #reference>
@@ -277,7 +277,7 @@ export default {
         }
 
         // 문의답변등록페이지로 이동
-        const moveReply = (id) => {
+        const moveInquiryReply = (id) => {
             router.push({path:'/admin/inquiry/reply', query:{no : id}});
         }
 
@@ -293,7 +293,7 @@ export default {
             changePage,
             search,
             deleteInquiry,
-            moveReply
+            moveInquiryReply
         }
     }
 }
