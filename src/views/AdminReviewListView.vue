@@ -11,16 +11,15 @@
                     <div class="row mb-3">
                         <div class="col-2 py-2">
                             리뷰번호
-                            <!-- <p class="text-center">번호</p> -->
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="리뷰번호">
+                            <input type="text" class="form-control" v-model="state.searchId" placeholder="리뷰번호">
                         </div>
                         <div class="col-2 py-2">
                             회원번호
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="회원번호">
+                            <input type="text" class="form-control" v-model="state.searchMemberNumber" placeholder="회원번호">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -28,56 +27,54 @@
                             상품번호
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="상품번호">
+                            <input type="text" class="form-control"  v-model="state.searchProductId" placeholder="상품번호">
                         </div>
                         <div class="col-2 py-2">
                             리뷰내용
                         </div>
                         <div class="col-4">
-                            <input type="text" class="form-control" placeholder="리뷰내용">
+                            <input type="text" class="form-control" v-model="state.searchContent" placeholder="리뷰내용">
                         </div>
                     </div>
                     
                 </div>
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-success btn-lg">검색</button>
+                    <button class="btn btn-success btn-lg" @click="search()">검색</button>
                 </div>
             </div>
 
             <!-- 검색 결과-->
             <div>
-                <table class="table">
+                <table class="table align-middle">
                     <thead>
-                        <tr>
-                            <th scope="col"><input class="form-check-input" type="checkbox" value=""></th>
-                            <th scope="col">리뷰번호</th>
-                            <th scope="col">회원번호</th>
-                            <th scope="col">회원이름</th>
-                            <th scope="col">상품번호</th>
+                        <tr  class="text-center">
+                            <th scope="col" width="50px">
+                                <input class="form-check-input" type="checkbox" :checked="state.checkAll" @change="checkAllEvnet()">
+                            </th>
+                            <th scope="col" width="90px">리뷰번호</th>
+                            <th scope="col" width="90px">회원번호</th>
+                            <th scope="col" width="90px">회원이름</th>
+                            <th scope="col" width="90px">상품번호</th>
                             <th scope="col">리뷰내용</th>
-                            <th scope="col">등록일</th>
+                            <th scope="col" width="120px">등록일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>140</td>
-                            <td>한여름</td>
-                            <td>250</td>
-                            <td>완전좋아요~완전좋아요~완전좋아요~완전좋아요~완전좋아요~완전좋아요~</td>
-                            <td>2022/01/22</td>
+                        <tr class="text-center" v-for="data of state.rows" :key="data">
+                            <td><input class="form-check-input" type="checkbox" :value="data.id" v-model="state.checkList" @change="checkEvnet()"></td>
+                            <td>{{ data.id }}</td>
+                            <td>{{ data.memberNumber }}</td>
+                            <td>{{ data.name }}</td>
+                            <td>
+                                <el-popover placement="top-start" :title=data.productEngName :width="400" trigger="hover" :content=data.productKorName>
+                                    <template #reference>
+                                        {{ data.productId }}
+                                    </template> 
+                                </el-popover>
+                            </td>
+                            <td>{{ data.content }}</td>
+                            <td>{{ changeDateFormat(data.registDate) }}</td>
                         </tr>
-                        <tr>
-                            <td><input class="form-check-input" type="checkbox" value=""></td>
-                            <td>1</td>
-                            <td>140</td>
-                            <td>한여름</td>
-                            <td>250</td>
-                            <td>완전좋아요~완전좋아요~완전좋아요~완전좋아요~완전좋아요~완전좋아요~</td>
-                            <td>2022/01/22</td>
-                        </tr>
-                        
                     </tbody>
                 </table>
             </div>
@@ -159,15 +156,15 @@ export default {
                 return false;
             }
 
-            if( isNaN(state.searchProductId)) {
-                window.alert("상품번호는 숫자만 입력해주세요.");
-                state.searchProductId = '';
-                return false;
-            }
-
             if( isNaN(state.searchMemberNumber)) {
                 window.alert("회원번호는 숫자만 입력해주세요.");
                 state.searchMemberNumber = '';
+                return false;
+            }
+
+            if( isNaN(state.searchProductId)) {
+                window.alert("상품번호는 숫자만 입력해주세요.");
+                state.searchProductId = '';
                 return false;
             }
 
@@ -179,7 +176,7 @@ export default {
                 state.isSearch = true;
             }
 
-            axios.get(`/api/admin/review/search?page=${state.page}&id=${state.searchId}&productId=${state.searchProductId}&memberNumber=${state.searchMemberNumber}&buyingStatus=${state.searchBuyingStatus}&expiryDateStart=${state.searchExpiryDateStart}&expiryDateEnd=${state.searchExpiryDateEnd}`).then((res)=>{
+            axios.get(`/api/admin/review/search?page=${state.page}&id=${state.searchId}&memberNumber=${state.searchMemberNumber}&productId=${state.searchProductId}&content=${state.searchContent}`).then((res)=>{
                 console.log(res.data);
                 state.rows = res.data.reviewList;
                 state.total = res.data.total;
@@ -229,15 +226,26 @@ export default {
 
         // 리뷰삭제
         const deleteReview = () => {
+            if(state.checkList.length === 0) {
+                window.alert("대상을 1개 이상 선택해주세요.");
+                return false;
+            }
+
+            if(confirm("선택한 리뷰를 삭제하겠습니까?")) {
+                axios.put(`/api/admin/review/delete`, state.checkList).then((res)=>{
+                    console.log(res.data);
+                    window.alert("삭제처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                }).catch(()=>{
+                    window.alert("삭제처리 중 오류가 발생하였습니다.");
+                })
+            }
 
         }
 
         onMounted(() => {
             loadData();
         })
-
-
-        
 
         return {
             state,
