@@ -227,7 +227,7 @@ export default {
             isSearch : false,
             checkAll : false,
             checkList : [],
-            sellingStatusList : [
+            sellingStatusList : [ // 판매입찰상태
                 { id : 0, value : '판매상태선택'}, 
                 { id : 21, value : '발송요청'},
                 { id : 22, value : '발송완료'},
@@ -237,18 +237,18 @@ export default {
                 { id : 26, value : '검수불합격'},
                 { id : 27, value : '검수합격'},
                 { id : 50, value : '정산완료'},
-                { id : 51, value : '취소완료'},
+                // { id : 51, value : '취소완료'},
                 { id : 52, value : '불합격반송'},
                 { id : 53, value : '회수완료'},
             ],
-            inventorySellingStatusList : [
+            inventorySellingStatusList : [ // 보관판매상태
                 { id : 0, value : '판매상태선택'}, 
                 { id : 50, value : '정산완료'},
-                { id : 51, value : '취소완료'},
-                { id : 52, value : '불합격반송'},
-                { id : 53, value : '회수완료'},
+                // { id : 51, value : '취소완료'},
+                // { id : 52, value : '불합격반송'},
+                // { id : 53, value : '회수완료'},
             ],
-            buyingStatusList : [
+            buyingStatusList : [ // 구매입찰 상태
                 { id : 0, value : '구매상태선택'},
                 { id : 31, value : '대기중'}, 
                 { id : 32, value : '발송완료'},
@@ -263,15 +263,15 @@ export default {
                 { id : 62, value : '반품완료'},
                 { id : 63, value : '교환완료'},
             ],
-            inventoryBuyingStatusList : [
+            inventoryBuyingStatusList : [ // 보관판매의 물건 구매한 경우 상태
                 { id : 0, value : '구매상태선택'},
                 { id : 38, value : '배송중'}, 
                 { id : 60, value : '배송완료'}, 
-                { id : 61, value : '취소완료'},
-                { id : 62, value : '반품완료'},
-                { id : 63, value : '교환완료'},
+                // { id : 61, value : '취소완료'},
+                // { id : 62, value : '반품완료'},
+                // { id : 63, value : '교환완료'},
             ],
-            brandStatusList : [
+            brandStatusList : [ // 브랜드 상품 구매시 상태
                 { id : 0, value : '구매상태선택'},
                 { id : 38, value : '배송중'},
                 { id : 39, value : '상품준비중'},
@@ -438,7 +438,7 @@ export default {
             return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-        // 상태변경 TODO 지수씨와 이야기후 기능확정 예정 - 이야기 내용에 따라 판매입찰, 구매입찰, 보관판매관리 내용 변동 가능성 있음
+        // 상태변경 
         const editStatus = () => {
 
             if(state.checkList.length === 0) {
@@ -454,42 +454,33 @@ export default {
                     
                     if(state.checkList.includes(state.rows[idx].id)) {
 
-                        if(state.rows[idx].contractDiv === 1) {
-                            // 보관상품거래의 경우
-
-                            // 구매상태 미선택 체크
-                            if(state.rows[idx].buyingStatus === 0) {
+                        // 구매상태 미선택 체크
+                        if(state.rows[idx].buyingStatus === 0) {
                                 window.alert("거래번호" + state.rows[idx].id +"번의 변경할 구매상태를 선택해주세요.");
                                 return false;
                             }
-                            updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus, buyingStatus : state.rows[idx].buyingStatus });
-                        
-                        } else if (state.rows[idx].contractDiv === 2) {
+
+                        if (state.rows[idx].contractDiv === 2) {
                             // 입찰거래의 경우
 
-
-                        } else {
-                            // 브랜드상품 구매의 경우
-
-                            // 구매상태 미선택 체크
-                            if(state.rows[idx].buyingStatus === 0) {
-                                window.alert("거래번호" + state.rows[idx].id +"번의 변경할 구매상태를 선택해주세요.");
+                            // 판매상태 미선택 체크
+                            if(state.rows[idx].sellingStatus === 0) {
+                                window.alert("거래번호" + state.rows[idx].id +"번의 변경할 판매상태를 선택해주세요.");
                                 return false;
                             }
-                            updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus, buyingStatus : state.rows[idx].buyingStatus });
 
-                        }
+                        } 
+                        updateData.push({id : state.rows[idx].id, sellingStatus : state.rows[idx].sellingStatus, buyingStatus : state.rows[idx].buyingStatus });
                     }
-
                 }
 
-                // axios.put(`/api/admin/contract/edit`, updateData).then((res)=>{
-                //     console.log(res.data);
-                //     window.alert("상태변경처리가 정상적으로 처리되었습니다.");
-                //     loadData();
-                // }).catch(()=>{
-                //     window.alert("상태변경처리 중 오류가 발생하였습니다.");
-                // })
+                axios.put(`/api/admin/contract/edit`, updateData).then((res)=>{
+                    console.log(res.data);
+                    window.alert("상태변경처리가 정상적으로 처리되었습니다.");
+                    loadData();
+                }).catch(()=>{
+                    window.alert("상태변경처리 중 오류가 발생하였습니다.");
+                })
             }
         }
 
