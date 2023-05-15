@@ -165,6 +165,9 @@ export default {
                 { id : 17, value : '판매중'},
                 { id : 18, value : '판매완료'},
                 { id : 19, value : '보관만료'},
+                { id : 51, value : '취소완료'},
+                { id : 52, value : '불합격반송'},
+                { id : 53, value : '회수완료'},
             ],
             searchId : '', // 검색조건
             searchProductId : '', // 검색조건

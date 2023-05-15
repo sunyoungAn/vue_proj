@@ -143,6 +143,7 @@ export default {
                 { id : 0, value : '판매상태선택'},
                 { id : 1, value : '입찰중'},
                 { id : 2, value : '기한만료'},
+                { id : 51, value : '취소완료'},
                 { id : 99, value : '거래종료'},
             ],
             searchId : '', // 검색조건
