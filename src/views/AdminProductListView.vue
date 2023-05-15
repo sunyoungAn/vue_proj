@@ -27,7 +27,7 @@
                             브랜드
                         </div>
                         <div class="col-4">
-                            <select class="form-select brand_select" v-model="state.searchBrand">
+                            <select class="form-select" v-model="state.searchBrand">
                                 <option :value=0>브랜드선택</option>
                                 <option v-for="brand in state.brandList" :key="brand" :value="brand.brandId" >{{ brand.brandName }}</option>
                             </select>

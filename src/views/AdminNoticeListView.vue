@@ -12,7 +12,7 @@
                         <div class="col-2 py-2">
                         </div>
                         <div class="col-2">
-                            <select class="form-select brand_select" v-model="state.select">
+                            <select class="form-select" v-model="state.select">
                                 <option :value=1>제목</option>
                                 <option :value=2>내용</option>
                                 <option :value=3>제목+내용</option>
